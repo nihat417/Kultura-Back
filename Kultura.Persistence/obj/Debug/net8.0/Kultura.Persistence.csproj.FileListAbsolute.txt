@@ -1,0 +1,17 @@
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\bin\Debug\net8.0\Kultura.Persistence.deps.json
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\bin\Debug\net8.0\Kultura.Persistence.runtimeconfig.json
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\bin\Debug\net8.0\Kultura.Persistence.dll
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\bin\Debug\net8.0\Kultura.Persistence.pdb
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\bin\Debug\net8.0\Kultura.Domain.dll
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\bin\Debug\net8.0\Kultura.Domain.pdb
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.csproj.AssemblyReference.cache
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.AssemblyInfoInputs.cache
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.AssemblyInfo.cs
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.csproj.CoreCompileInputs.cache
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura..1234E6B7.Up2Date
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.dll
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\refint\Kultura.Persistence.dll
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.pdb
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.genruntimeconfig.cache
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\ref\Kultura.Persistence.dll

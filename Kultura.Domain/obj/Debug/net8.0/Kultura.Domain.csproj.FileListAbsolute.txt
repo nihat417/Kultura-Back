@@ -1,0 +1,12 @@
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\bin\Debug\net8.0\Kultura.Domain.deps.json
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\bin\Debug\net8.0\Kultura.Domain.dll
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\bin\Debug\net8.0\Kultura.Domain.pdb
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\Kultura.Domain.csproj.AssemblyReference.cache
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\Kultura.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\Kultura.Domain.AssemblyInfoInputs.cache
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\Kultura.Domain.AssemblyInfo.cs
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\Kultura.Domain.csproj.CoreCompileInputs.cache
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\Kultura.Domain.dll
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\refint\Kultura.Domain.dll
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\Kultura.Domain.pdb
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\ref\Kultura.Domain.dll
