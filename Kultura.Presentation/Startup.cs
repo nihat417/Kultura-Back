@@ -30,7 +30,11 @@ namespace Kultura.Presentation
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Kultura API V1"); 
+                    options.RoutePrefix = string.Empty; 
+                });
             }
             else
             {

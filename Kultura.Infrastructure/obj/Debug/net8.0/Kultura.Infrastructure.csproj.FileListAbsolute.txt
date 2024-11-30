@@ -17,3 +17,4 @@ C:\Users\akrem\source\repos\Kultura-Back\Kultura.Infrastructure\obj\Debug\net8.0
 C:\Users\akrem\source\repos\Kultura-Back\Kultura.Infrastructure\obj\Debug\net8.0\Kultura.Infrastructure.pdb
 C:\Users\akrem\source\repos\Kultura-Back\Kultura.Infrastructure\obj\Debug\net8.0\Kultura.Infrastructure.genruntimeconfig.cache
 C:\Users\akrem\source\repos\Kultura-Back\Kultura.Infrastructure\obj\Debug\net8.0\ref\Kultura.Infrastructure.dll
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Infrastructure\obj\Debug\net8.0\Kultura.Infrastructure.sourcelink.json
