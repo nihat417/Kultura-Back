@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Kultura.Persistence")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1a6d7507af442ed19ecb38cd48320e4d752d9643")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+30758b4bf13bfc10c1a047b2d880611ed0112eb9")]
 [assembly: System.Reflection.AssemblyProductAttribute("Kultura.Persistence")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Kultura.Persistence")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kultura.Presentation", "Kultura.Presentation.csproj", "{98BDD052-0C5E-4C56-A6A4-9908A81A53F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kultura.Presentation", "Kultura.Presentation.csproj", "{98BDD052-0C5E-4C56-A6A4-9908A81A53F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kultura.Domain", "..\Kultura.Domain\Kultura.Domain.csproj", "{F7D3590C-F473-4E9B-8991-3C068D2827F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kultura.Domain", "..\Kultura.Domain\Kultura.Domain.csproj", "{F7D3590C-F473-4E9B-8991-3C068D2827F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kultura.Infrastructure", "..\Kultura.Infrastructure\Kultura.Infrastructure.csproj", "{8A090CF4-8D27-48F8-BECF-B7A802CA794B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kultura.Infrastructure", "..\Kultura.Infrastructure\Kultura.Infrastructure.csproj", "{8A090CF4-8D27-48F8-BECF-B7A802CA794B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kultura.Persistence", "..\Kultura.Persistence\Kultura.Persistence.csproj", "{6754CF67-04DF-477E-9AD9-F3DE44D4CA16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kultura.Persistence", "..\Kultura.Persistence\Kultura.Persistence.csproj", "{6754CF67-04DF-477E-9AD9-F3DE44D4CA16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kultura.Application", "..\Kultura.Application\Kultura.Application.csproj", "{3C54B96A-83B9-4C2C-8DB7-91ADF6A485DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{6754CF67-04DF-477E-9AD9-F3DE44D4CA16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6754CF67-04DF-477E-9AD9-F3DE44D4CA16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6754CF67-04DF-477E-9AD9-F3DE44D4CA16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C54B96A-83B9-4C2C-8DB7-91ADF6A485DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C54B96A-83B9-4C2C-8DB7-91ADF6A485DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C54B96A-83B9-4C2C-8DB7-91ADF6A485DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C54B96A-83B9-4C2C-8DB7-91ADF6A485DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
