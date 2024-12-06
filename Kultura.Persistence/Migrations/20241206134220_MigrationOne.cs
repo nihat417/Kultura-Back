@@ -33,6 +33,7 @@ namespace Kultura.Persistence.Migrations
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -58,16 +59,21 @@ namespace Kultura.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MainPhoto = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MainPhoto = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cuisines = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Photos = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Cuisines = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OpeningTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ClosingTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MinPrice = table.Column<decimal>(type: "money", nullable: false),
                     MaxPrice = table.Column<decimal>(type: "money", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -234,6 +240,10 @@ namespace Kultura.Persistence.Migrations
                     Capacity = table.Column<int>(type: "int", nullable: false),
                     FloorNumber = table.Column<int>(type: "int", nullable: false),
                     FloorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    X = table.Column<int>(type: "int", nullable: false),
+                    Y = table.Column<int>(type: "int", nullable: false),
+                    Radius = table.Column<double>(type: "float", nullable: false),
+                    ShapeType = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

@@ -15,3 +15,4 @@ C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\re
 C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.pdb
 C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.genruntimeconfig.cache
 C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\ref\Kultura.Persistence.dll
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Persistence\obj\Debug\net8.0\Kultura.Persistence.sourcelink.json

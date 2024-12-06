@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using Kultura.Application.Services;
+using Kultura.Application.Model;
+using Kultura.Application.Repository.Abstract;
+using Kultura.Application.Repository.Concrete;
 
 namespace Kultura.Infrastructure.Extensions
 {
@@ -23,15 +27,13 @@ namespace Kultura.Infrastructure.Extensions
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             });
 
-            //var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
-            //if (emailConfig != null)
-            //{
-            //    services.AddSingleton(emailConfig);
-            //}
+            var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+            if (emailConfig != null)
+                services.AddSingleton(emailConfig);
 
-            //services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            //services.AddSingleton<JwtTokenService>();
+            services.AddSingleton<JwtTokenService>();
 
             return services;
         }

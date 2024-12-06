@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kultura.Application\Kultura.Application.csproj" />
     <ProjectReference Include="..\Kultura.Domain\Kultura.Domain.csproj" />
     <ProjectReference Include="..\Kultura.Persistence\Kultura.Persistence.csproj" />
   </ItemGroup>

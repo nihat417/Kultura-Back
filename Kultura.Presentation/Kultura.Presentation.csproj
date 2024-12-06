@@ -36,4 +36,8 @@
     <ProjectReference Include="..\Kultura.Persistence\Kultura.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\User\Controllers\" />
+  </ItemGroup>
+
 </Project>

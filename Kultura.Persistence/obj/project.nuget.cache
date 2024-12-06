@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ug/lA9YwCto9UpPKWxR4pWt8PNup7VGaUjNxd/h8KlHFQT2vZiNwbbh7cHTkCaH+uzu4nkDt1YgpWJy/y5PJgw==",
+  "dgSpecHash": "bkFylzhbY94=",
   "success": true,
   "projectFilePath": "C:\\Users\\akrem\\source\\repos\\Kultura-Back\\Kultura.Persistence\\Kultura.Persistence.csproj",
   "expectedPackageFiles": [
@@ -87,5 +87,16 @@
     "C:\\Users\\akrem\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\akrem\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.Text.Json' 6.0.7 has a known high severity vulnerability, https://github.com/advisories/GHSA-8g4q-xg66-9fp4",
+      "libraryId": "System.Text.Json",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }

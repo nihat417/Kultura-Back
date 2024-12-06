@@ -2,19 +2,23 @@
 {
     public class Restaurant : BaseEntity
     {
-        public string Name { get; set; } = default!;
         public string Location { get; set; } = default!;
         public string? Description { get; set; }
-        public string MainPhoto { get; set; } = default!;
+        public string? MainPhoto { get; set; }
+
+        public string Name { get; set; } = default!;
+        public string Email { get; set; } = null!;
+
+        public bool EmailConfirmed { get; set; }
+
+        public string PhoneNumber { get; set; } = null!;
+        public string? Cuisines { get; set; }
+
+        public string Password { get; set; } = null!;
 
         public virtual List<string> Photos { get; set; } = new List<string>();
-
-        public virtual List<string> Cuisines { get; set; } = new List<string>();
-
         public virtual List<Floor> Floors { get; set; } = new List<Floor>();
-
         public virtual List<Review> Reviews { get; set; } = new List<Review>();
-
         public virtual List<Reservation> Reservations { get; set; } = new List<Reservation>();
 
         private TimeSpan _openingTime;
@@ -53,5 +57,8 @@
                 return Math.Round(Reviews.Average(r => r.Rating), 1);
             }
         }
+
+
+        public string PasswordHash { get; set; } = null!;
     }
 }

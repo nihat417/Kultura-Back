@@ -10,3 +10,4 @@ C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\Kultura
 C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\refint\Kultura.Domain.dll
 C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\Kultura.Domain.pdb
 C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\ref\Kultura.Domain.dll
+C:\Users\akrem\source\repos\Kultura-Back\Kultura.Domain\obj\Debug\net8.0\Kultura.Domain.sourcelink.json
