@@ -1,6 +1,5 @@
 ﻿using Kultura.Application.Model;
 using Kultura.Application.Repository.Abstract;
-using Kultura.Application.Services;
 using Kultura.Domain.Entities;
 using Kultura.Persistence.Data;
 using Microsoft.AspNetCore.Identity;
@@ -34,6 +33,7 @@ namespace Kultura.Application.Repository.Concrete
         public IAuthService AuthService => _authService ??= new AuthService(_userManager, _roleManager, _jwtTokenService);
         public IRestaurantService RestaurantService => _restaurantService ??= new RestaurantService(_userManager,_context ,_roleManager, _jwtTokenService);
         public IEmailService EmailService => _emailService ??= new EmailService(_emailConfiguration);
+        public IJwtTokenService JwtTokenService => _jwtTokenService;
         /*public IAccountService AccountService => _accountService ??= new AccountService(_context, _userManager);*/
         public UserManager<User> UserManager => _userManager;
         public RoleManager<IdentityRole> RoleManager => _roleManager;

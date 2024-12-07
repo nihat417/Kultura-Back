@@ -5,6 +5,8 @@ using Kultura.Application.Repository.Abstract;
 using Kultura.Application.Repository.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Kultura.Presentation.Areas.Restaurant.Controllers
 {
@@ -30,22 +32,23 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
                 var user = await _unitOfWork.RestaurantService.FindEmailRestaurant(registerDTO.Email);
                 if (user != null)
                 {
-                    //var token = await _unitOfWork.RestaurantService.GenerateEmailConfirmToken(registerDTO.Email);
-                    //if (!string.IsNullOrEmpty(token))
-                    //{
-                    //    var confirmLink = Url.Action(
-                    //        "ConfirmEmail",
-                    //        "Auth",
-                    //        new { token, email = registerDTO.Email },
-                    //        Request.Scheme);
+                    var tokenResponse = await _unitOfWork.RestaurantService.GenerateEmailConfirmToken(registerDTO.Email);
+                    if (tokenResponse.Success)
+                    {
+                        var token = tokenResponse.Data as string;
+                        var confirmLink = Url.Action(
+                            "ConfirmEmail",
+                            "Restaurant",
+                            new { token, email = registerDTO.Email },
+                            Request.Scheme);
 
-                    //    var message = new Message(new[] { registerDTO.Email }, "Confirmation Email Link", confirmLink!);
-                    //    _unitOfWork.EmailService.SendEmail(message);
-                    //    return Ok(response);
-                    //}
-                    //return BadRequest("Failed to generate email confirmation token");
+                        var message = new Message(new[] { registerDTO.Email }, "Confirmation Email Link", confirmLink!);
+                        _unitOfWork.EmailService.SendEmail(message);
+
+                        return Ok(response);
+                    }
                 }
-                return BadRequest("User not found");
+                return BadRequest("Failed to generate email confirmation token");
             }
             return BadRequest(response);
         }
@@ -54,26 +57,31 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
 
         #region EmailConfirm
 
-        //[HttpGet("ConfirmEmail")]
-        //public async Task<IActionResult> ConfirmEmail(string token, string email)
-        //{
-        //    if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
-        //        return BadRequest("Invalid token or email");
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(string token)
+        {
+            var email = GetEmailFromToken(token);
 
-        //    var user = await _unitOfWork.RestaurantService.FindByEmailAsync(email);
-        //    if (user == null)
-        //        return NotFound("User not found");
+            var restaurant = await _unitOfWork.RestaurantService.GetByEmailAsync(email);
 
-        //    var result = await _unitOfWork.UserService.ConfirmEmailAsync(user, token);
-        //    if (!result.Succeeded)
-        //        return BadRequest("Failed to confirm email");
+            if (restaurant == null) return BadRequest("Restaurant not found.");
 
-        //    var emailConfirmed = await _unitOfWork.RestaurantService.ConfirmRestaurantEmail(email);
-        //    if (!emailConfirmed)
-        //        return BadRequest("Failed to update restaurant email confirmation");
+            var isValidToken = _unitOfWork.JwtTokenService.ValidateEmailConfirmationTokenAsync(token, restaurant);
 
-        //    return Ok("Email confirmed successfully");
-        //}
+            if (!isValidToken) return BadRequest("Invalid token.");
+
+            restaurant.EmailConfirmed = true;
+            await _unitOfWork.RestaurantService.UpdateAsync(restaurant);
+
+            return Ok("Email confirmed successfully.");
+        }
+
+        private string GetEmailFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+            return jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        }
 
         #endregion
 

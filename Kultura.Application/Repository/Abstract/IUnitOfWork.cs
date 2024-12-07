@@ -8,6 +8,8 @@ namespace Kultura.Application.Repository.Abstract
         IAuthService AuthService { get; }
         IRestaurantService RestaurantService { get; }
         IEmailService EmailService { get; }
+        IJwtTokenService JwtTokenService { get; }
+            
         /*IAccountService AccountService { get; }*/
         UserManager<User> UserManager { get; }
         RoleManager<IdentityRole> RoleManager { get; }

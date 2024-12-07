@@ -1,8 +1,6 @@
 ﻿using Kultura.Application.Dto.AuthDto;
 using Kultura.Application.Model;
-using Kultura.Application.Model.Responses;
 using Kultura.Application.Repository.Abstract;
-using Kultura.Application.Services;
 using Kultura.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using static Kultura.Application.Model.Responses.ServiceResponses;

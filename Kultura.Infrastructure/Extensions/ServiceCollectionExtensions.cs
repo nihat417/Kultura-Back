@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
-using Kultura.Application.Services;
 using Kultura.Application.Model;
 using Kultura.Application.Repository.Abstract;
 using Kultura.Application.Repository.Concrete;
@@ -40,6 +39,15 @@ namespace Kultura.Infrastructure.Extensions
 
         public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var jwtKey = configuration["Jwt:Key"]
+                ?? throw new InvalidOperationException("JWT Key is missing in configuration");
+
+            var jwtIssuer = configuration["Jwt:Issuer"]
+                ?? throw new InvalidOperationException("JWT Issuer is missing in configuration");
+
+            var jwtAudience = configuration["Jwt:Audience"]
+                ?? throw new InvalidOperationException("JWT Audience is missing in configuration");
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -52,9 +60,9 @@ namespace Kultura.Infrastructure.Extensions
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
                     ValidateLifetime = true,
-                    ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidAudience = configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!))
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                 };
             });
 
