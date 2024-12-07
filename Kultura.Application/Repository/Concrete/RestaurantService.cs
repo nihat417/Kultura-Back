@@ -1,4 +1,5 @@
 ﻿using Kultura.Application.Dto.RestaurntDtos;
+using Kultura.Application.Model;
 using Kultura.Application.Repository.Abstract;
 using Kultura.Domain.Entities;
 using Kultura.Persistence.Data;
@@ -46,9 +47,23 @@ namespace Kultura.Application.Repository.Concrete
         }
 
 
-        public async Task<GeneralResponse> LoginRestaurant(RestaurantLoginDto restaurantLogin)
+        public async Task<LoginResponse> LoginRestaurant(RestaurantLoginDto restaurantLogin)
         {
-            throw new NotImplementedException();
+            if (restaurantLogin == null) return new LoginResponse(false, null, null, "Login model is empty");
+
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Email == restaurantLogin.Email);
+
+            if (restaurant == null) return new LoginResponse(false, null, null, "Invalid email or password");
+
+            var passwordHasher = new PasswordHasher<Restaurant>();
+            var verificationResult = passwordHasher.VerifyHashedPassword(restaurant, restaurant.PasswordHash, restaurantLogin.Password);
+
+            if (verificationResult != PasswordVerificationResult.Success) return new LoginResponse(false, null, null, "Invalid email or password");
+
+            var restaurantsession = new UserSession(restaurant.Id, restaurant.Name,"",0,restaurant.Email,"Restaurant");
+            (string accsesToken, string refreshToken) = _jwtTokenService.CreateToken(restaurantsession);
+
+            return new LoginResponse(true,accsesToken, refreshToken, "Login successful");
         }
 
         #endregion

@@ -6,7 +6,7 @@ namespace Kultura.Application.Repository.Abstract
 {
     public interface IRestaurantService
     {
-        Task<GeneralResponse> LoginRestaurant(RestaurantLoginDto restaurantLogin);
+        Task<LoginResponse> LoginRestaurant(RestaurantLoginDto restaurantLogin);
         Task<GeneralResponse> RegisterRestaurant(RestaurantRegisterDto restaurantRegister);
 
         //operation services
