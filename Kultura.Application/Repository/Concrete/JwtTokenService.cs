@@ -1,6 +1,5 @@
 ﻿using Kultura.Application.Model;
 using Kultura.Application.Repository.Abstract;
-using Kultura.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -63,14 +62,21 @@ namespace Kultura.Application.Repository.Concrete
             }
         }
 
-        public async Task<string> GenerateEmailConfirmationTokenAsync(Restaurant restaurant)
+        public async Task<string> GenerateEmailConfirmationTokenAsync<T>(T entity) where T : class
         {
-            if (restaurant == null)
-                throw new ArgumentNullException(nameof(restaurant), "Restaurant cannot be null.");
-            if (string.IsNullOrWhiteSpace(restaurant.Email))
-                throw new ArgumentNullException(nameof(restaurant.Email), "Restaurant email cannot be null or empty.");
-            if (string.IsNullOrWhiteSpace(restaurant.Id))
-                throw new ArgumentNullException(nameof(restaurant.Id), "Restaurant ID cannot be null or empty.");
+            var emailProperty = typeof(T).GetProperty("Email");
+            var idProperty = typeof(T).GetProperty("Id");
+
+            if (emailProperty == null || idProperty == null)
+                throw new ArgumentException("The provided entity does not have required properties 'Email' and 'Id'.");
+
+            var email = emailProperty.GetValue(entity)?.ToString();
+            var id = idProperty.GetValue(entity)?.ToString();
+
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ArgumentNullException(nameof(email), "Email cannot be null or empty.");
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentNullException(nameof(id), "ID cannot be null or empty.");
 
             var secret = _configuration["Jwt:Key"];
             var issuer = _configuration["Jwt:Issuer"];
@@ -80,12 +86,12 @@ namespace Kultura.Application.Repository.Concrete
                 throw new InvalidOperationException("JWT configuration is missing or invalid.");
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, restaurant.Email),
-                new Claim(ClaimTypes.NameIdentifier, restaurant.Id)
-            };
+    {
+        new Claim(ClaimTypes.Name, email),
+        new Claim(ClaimTypes.NameIdentifier, id)
+    };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
@@ -99,21 +105,32 @@ namespace Kultura.Application.Repository.Concrete
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-
-        public bool ValidateEmailConfirmationTokenAsync(string token, Restaurant restaurant)
+        public bool ValidateEmailConfirmationTokenAsync<T>(string token, T entity) where T : class
         {
             try
             {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity), "Entity cannot be null.");
+
+                var emailProperty = typeof(T).GetProperty("Email");
+                if (emailProperty == null)
+                    throw new InvalidOperationException("The entity does not contain an 'Email' property.");
+
+                var emailValue = emailProperty.GetValue(entity)?.ToString();
+                if (string.IsNullOrWhiteSpace(emailValue))
+                    throw new InvalidOperationException("The 'Email' property value cannot be null or empty.");
+
                 var handler = new JwtSecurityTokenHandler();
                 var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
                 var emailClaim = jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
-                return emailClaim == restaurant.Email;
+                return emailClaim == emailValue;
             }
             catch (Exception)
             {
                 return false;
             }
         }
+
     }
 }

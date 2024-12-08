@@ -34,6 +34,8 @@
             }
         }
 
+        public virtual ICollection<Table> Tables { get; set; }
+
         public string ClosingTime
         {
             get => _closingTime.ToString(@"hh\:mm");
@@ -48,6 +50,8 @@
 
         public decimal MinPrice { get; set; }
         public decimal MaxPrice { get; set; }
+
+        public virtual Roles Roles { get; set; } = null!;
 
         public double AverageRating
         {

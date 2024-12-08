@@ -11,8 +11,6 @@ namespace Kultura.Application.Repository.Abstract
         IJwtTokenService JwtTokenService { get; }
             
         /*IAccountService AccountService { get; }*/
-        UserManager<User> UserManager { get; }
-        RoleManager<IdentityRole> RoleManager { get; }
         Task<int> SaveChangesAsync();
     }
 }

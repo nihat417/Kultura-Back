@@ -9,6 +9,21 @@ namespace Kultura.Application.Repository.Abstract
         Task<LoginResponse> LoginRestaurant(RestaurantLoginDto restaurantLogin);
         Task<GeneralResponse> RegisterRestaurant(RestaurantRegisterDto restaurantRegister);
 
+
+        #region general services
+
+        //get
+        Task<GeneralResponse> GetRestaurantById(string id);
+        Task<GeneralResponse> GetRestaurantByEmail(string email);
+
+        //post
+        Task<GeneralResponse> AddFloor(FloorDto floor);
+
+        //delete
+        Task<GeneralResponse> DeleteFloor(FloorDto floor);
+
+        #endregion
+
         //operation services
         Task<GeneralResponse> FindEmailRestaurant(string email);
         Task<Restaurant> GetByEmailAsync(string email);

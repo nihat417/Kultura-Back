@@ -9,8 +9,7 @@ using static Kultura.Application.Model.Responses.ServiceResponses;
 
 namespace Kultura.Application.Repository.Concrete
 {
-    internal class RestaurantService(UserManager<User> userManager, AppDbContext _dbContext, RoleManager<IdentityRole> roleManager, 
-        JwtTokenService _jwtTokenService) : IRestaurantService
+    internal class RestaurantService(AppDbContext _dbContext, JwtTokenService _jwtTokenService) : IRestaurantService
     {
 
         #region Auth Service
@@ -36,6 +35,7 @@ namespace Kultura.Application.Repository.Concrete
                 OpeningTime = restaurantRegisterDto.OpeningTime,
                 ClosingTime = restaurantRegisterDto.ClosingTime,
                 CreatedAt = DateTime.UtcNow,
+                Roles = new() { Name = "Restaurant" },
                 PasswordHash = passwordHasher.HashPassword(null, restaurantRegisterDto.Password),
                 Password = passwordHasher.HashPassword(null, restaurantRegisterDto.Password)
             };
@@ -88,7 +88,6 @@ namespace Kultura.Application.Repository.Concrete
 
         #endregion
 
-
         #region email token services
 
         public async Task<GeneralResponse> GenerateEmailConfirmToken(string email)
@@ -128,11 +127,102 @@ namespace Kultura.Application.Repository.Concrete
 
         #endregion
 
+        #region general services
+
+        //get
+
+        public async Task<GeneralResponse> GetRestaurantById(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))return new GeneralResponse(false, null, "Restaurant ID is null or empty", null);
+
+            try
+            {
+                var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == id);
+                if (restaurant == null) return new GeneralResponse(false, null, "Restaurant not found", null);
+
+                return new GeneralResponse(true, "Restaurant finded", null, restaurant);
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, $"Error retrieving restaurant: {ex.Message}", null);
+            }
+        }
+
+        public async Task<GeneralResponse> GetRestaurantByEmail(string email)
+        {
+            if (!string.IsNullOrWhiteSpace(email)) return new GeneralResponse(false,null,"email is null", null);
+
+            try
+            {
+                var restaurant = await _dbContext.Restaurants.FindAsync(email);
+                if (restaurant == null) return new GeneralResponse(false, null, "Restaurant not found", null);
+                return new GeneralResponse(true, "Restaurant finded", null, restaurant);
+            }
+            catch(Exception ex) 
+            {
+                return new GeneralResponse(false, null, $"Error retrieving restaurant: {ex.Message}", null);
+            }
+        }
+
+        //post
+
+        public async Task<GeneralResponse> AddFloor(FloorDto floordto)
+        {
+            if(floordto == null) return new GeneralResponse(false, null,"Floor Dto is null",null);
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == floordto.RestaurantId);
+
+            if(restaurant == null) return new GeneralResponse(false, null, "restaurant is not find", null);
+
+            try
+            {
+                var createdFloors = new Floor { Number =floordto.Number,RestaurantId = floordto.RestaurantId,CreatedAt = DateTime.Now };
+
+                await _dbContext.Floors.AddAsync(createdFloors);
+                await _dbContext.SaveChangesAsync();
+                return new GeneralResponse(true,"floor added sucsesfully",null,null);
+            }
+            catch (Exception ex) { return new GeneralResponse(false, null, ex.Message, null); }
+        }
+
+        //delete
+
+        public async Task<GeneralResponse> DeleteFloor(FloorDto floordto)
+        {
+            if (floordto == null) return new GeneralResponse(false, null, "Floor Dto is null", null);
+
+            try
+            {
+                var floor = await _dbContext.Floors.FirstOrDefaultAsync(f => f.Id == floordto.RestaurantId && f.RestaurantId == floordto.RestaurantId);
+
+                if (floor == null)
+                    return new GeneralResponse(false, null, "Floor not found or does not belong to the specified restaurant", null);
+
+                var higherFloorExists = await _dbContext.Floors.AnyAsync(f => f.RestaurantId == floordto.RestaurantId && f.Number > floor.Number);
+
+                if (higherFloorExists) return new GeneralResponse(false, null, "Cannot delete this floor. Please delete higher-numbered floors first.", null);
+
+                 _dbContext.Floors.Remove(floor);
+                await _dbContext.SaveChangesAsync();
+
+                return new GeneralResponse(true, "Floor deleted successfully", null, null);
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, $"Error deleting floor: {ex.Message}", null);
+            }
+        }
+
+
+
+        #endregion
+
 
         public async Task UpdateAsync(Restaurant restaurant)
         {
             _dbContext.Restaurants.Update(restaurant);
             await _dbContext.SaveChangesAsync();
         }
+
+        
     }
 }

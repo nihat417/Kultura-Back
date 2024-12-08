@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="JWT" Version="10.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
       <PrivateAssets>all</PrivateAssets>
@@ -34,10 +33,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Kultura.Infrastructure\Kultura.Infrastructure.csproj" />
     <ProjectReference Include="..\Kultura.Persistence\Kultura.Persistence.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\User\Controllers\" />
   </ItemGroup>
 
 </Project>

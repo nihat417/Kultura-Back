@@ -4,8 +4,10 @@
     "\\Kultura.Application",
     "\\Kultura.Application\\Dto",
     "\\Kultura.Application\\Dto\\RestaurntDtos",
+    "\\Kultura.Application\\Repository",
+    "\\Kultura.Application\\Repository\\Concrete",
     "\\Kultura.Presentation"
   ],
-  "SelectedNode": "\\Kultura.Presentation\\Kultura.Presentation.sln",
+  "SelectedNode": "\\Kultura.Application\\Repository\\Concrete\\RestaurantService.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -1,9 +1,6 @@
-﻿using Kultura.Application.Dto.AuthDto;
-using Kultura.Application.Dto.RestaurntDtos;
+﻿using Kultura.Application.Dto.RestaurntDtos;
 using Kultura.Application.Model;
 using Kultura.Application.Repository.Abstract;
-using Kultura.Application.Repository.Concrete;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,14 +13,14 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
     {
         #region auth
 
-        [HttpPost("LoginRestaurant")]
+        [HttpPost("Login")]
         public async Task<IActionResult> LoginRestaurant(RestaurantLoginDto loginDTO)
         {
             var response = await _unitOfWork.RestaurantService.LoginRestaurant(loginDTO);
             return Ok(response);
         }
 
-        [HttpPost("RegisterRestaurant")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(RestaurantRegisterDto registerDTO)
         {
             var response = await _unitOfWork.RestaurantService.RegisterRestaurant(registerDTO);

@@ -14,7 +14,7 @@ namespace Kultura.Presentation
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCustomServices(_configuration);
-            services.AddCustomIdentity();
+            //services.AddCustomIdentity();
             services.AddCustomCors();
             services.AddCustomDbContext(_configuration);
             services.AddCustomSwagger();

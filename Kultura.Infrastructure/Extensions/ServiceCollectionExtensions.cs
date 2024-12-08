@@ -27,8 +27,7 @@ namespace Kultura.Infrastructure.Extensions
             });
 
             var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
-            if (emailConfig != null)
-                services.AddSingleton(emailConfig);
+            if (emailConfig != null) services.AddSingleton(emailConfig);
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -69,19 +68,19 @@ namespace Kultura.Infrastructure.Extensions
             return services;
         }
 
-        public static IServiceCollection AddCustomIdentity(this IServiceCollection services)
-        {
-            services.AddIdentity<User, IdentityRole>(options =>
-            {
-                options.SignIn.RequireConfirmedEmail = true;
-            })
-            .AddDefaultTokenProviders()
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddSignInManager()
-            .AddRoles<IdentityRole>();
+        //public static IServiceCollection AddCustomIdentity(this IServiceCollection services)
+        //{
+        //    //services.AddIdentity<User, IdentityRole>(options =>
+        //    //{
+        //    //    options.SignIn.RequireConfirmedEmail = true;
+        //    //})
+        //    //.AddDefaultTokenProviders()
+        //    //.AddEntityFrameworkStores<AppDbContext>()
+        //    //.AddSignInManager()
+        //    //.AddRoles<IdentityRole>();
 
-            return services;
-        }
+        //    return services;
+        //}
 
         public static IServiceCollection AddCustomCors(this IServiceCollection services)
         {
