@@ -22,20 +22,20 @@ namespace Kultura.Persistence.Data
             modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.Table)
                 .WithMany(t => t.Reservations)
-                .HasForeignKey(r => r.TableId) // Используем TableId для внешнего ключа
-                .OnDelete(DeleteBehavior.NoAction); // Меняем на NoAction, чтобы избежать каскадного удаления
+                .HasForeignKey(r => r.TableId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.User)
                 .WithMany(u => u.Reservations)
                 .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.SetNull); // Сохраняем SetNull для UserId
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.Slot)
                 .WithMany(s => s.Reservations)
                 .HasForeignKey(r => r.SlotId)
-                .OnDelete(DeleteBehavior.Cascade); // Оставляем Cascade для SlotId
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Restaurant>()
                 .Property(r => r.MinPrice)
@@ -44,6 +44,12 @@ namespace Kultura.Persistence.Data
             modelBuilder.Entity<Restaurant>()
                 .Property(r => r.MaxPrice)
                 .HasColumnType("money");
+
+            modelBuilder.Entity<Reservation>()
+                .HasIndex(r => r.UserId); 
+
+            modelBuilder.Entity<Reservation>()
+                .HasIndex(r => r.TableId); 
 
             modelBuilder.Entity<Floor>()
                 .HasOne(f => f.Restaurant)
@@ -63,13 +69,14 @@ namespace Kultura.Persistence.Data
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
-                .HasForeignKey(r => r.Id);
+                .HasForeignKey(r => r.Id); 
 
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.Restaurant)
                 .WithMany(r => r.Reviews)
-                .HasForeignKey(r => r.Id);
+                .HasForeignKey(r => r.Id); 
         }
+
 
         public DbSet<User> Users { get; set; } = default!;
         public DbSet<Restaurant> Restaurants { get; set; } = default!;

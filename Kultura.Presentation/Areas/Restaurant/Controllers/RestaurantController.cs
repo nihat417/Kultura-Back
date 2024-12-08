@@ -82,7 +82,45 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
 
         #endregion
 
+        #region get operations
 
+        [HttpGet("getRestaurantById/{id}")]
+        public async Task<IActionResult> GetRestaurantById(string id)
+        {
+            var response = await _unitOfWork.RestaurantService.GetRestaurantById(id);
+            if (response.Success) return Ok(response);
+
+            return NotFound(response);
+        }
+
+        [HttpGet("getRestaurantByEmail/{email}")]
+        public async Task<IActionResult> GetRestaurantByEmail(string email)
+        {
+            var response = await _unitOfWork.RestaurantService.GetRestaurantByEmail(email);
+            if (response.Success) return Ok(response);
+
+            return NotFound(response);
+        }
+
+        #endregion
+
+        #region post operations
+
+        [HttpPost("add-floor")]
+        public async Task<IActionResult> AddFloor([FromBody] FloorDto floorDto)
+        {
+            if (floorDto == null)
+            {
+                return BadRequest("Floor DTO is null.");
+            }
+
+            var response = await _unitOfWork.RestaurantService.AddFloor(floorDto);
+            if (response.Success) return Ok(response);
+
+            return BadRequest(response); 
+        }
+
+        #endregion
 
 
     }
