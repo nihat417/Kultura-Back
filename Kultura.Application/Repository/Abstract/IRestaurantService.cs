@@ -18,6 +18,7 @@ namespace Kultura.Application.Repository.Abstract
 
         //post
         Task<GeneralResponse> AddFloor(FloorDto floor);
+        Task<GeneralResponse> AddTable(TableDto tableDto);
 
         //delete
         Task<GeneralResponse> DeleteFloor(FloorDto floor);

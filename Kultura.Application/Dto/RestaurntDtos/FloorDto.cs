@@ -7,7 +7,7 @@ namespace Kultura.Application.Dto.RestaurntDtos
         private int _number;
 
         [Required(ErrorMessage = "Floor number is required")]
-        [Range(18, 90, ErrorMessage = "Floor number must be between 1 and 30")]
+        [Range(1, 90, ErrorMessage = "Floor number must be between 1 and 30")]
         public int Number
         {
             get => _number;

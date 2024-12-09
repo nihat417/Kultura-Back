@@ -109,10 +109,7 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
         [HttpPost("add-floor")]
         public async Task<IActionResult> AddFloor([FromBody] FloorDto floorDto)
         {
-            if (floorDto == null)
-            {
-                return BadRequest("Floor DTO is null.");
-            }
+            if (floorDto == null) return BadRequest("Floor DTO is null.");
 
             var response = await _unitOfWork.RestaurantService.AddFloor(floorDto);
             if (response.Success) return Ok(response);
@@ -120,8 +117,37 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             return BadRequest(response); 
         }
 
+        [HttpPost("add-Table")]
+        public async Task<IActionResult> AddTable([FromBody] TableDto tableDto)
+        {
+            if (tableDto == null) return BadRequest("Floor DTO is null.");
+
+            var response = await _unitOfWork.RestaurantService.AddTable(tableDto);
+            if (response.Success) return Ok(response);
+
+            return BadRequest(response);
+        }
+
         #endregion
 
+
+        #region delete
+
+        [HttpDelete]
+        [Route("DeleteFloor")]
+        public async Task<IActionResult> DeleteFloor([FromBody] FloorDto floordto)
+        {
+            if (floordto == null)
+                return BadRequest(new { message = "FloorDto cannot be null" });
+
+            var response = await _unitOfWork.RestaurantService.DeleteFloor(floordto);
+
+            if (!response.Success)return BadRequest(new { message = response.Message });
+
+            return Ok(new { message = response.Message });
+        }
+
+        #endregion
 
     }
 }

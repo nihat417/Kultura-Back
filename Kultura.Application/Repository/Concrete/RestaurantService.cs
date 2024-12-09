@@ -168,21 +168,67 @@ namespace Kultura.Application.Repository.Concrete
 
         public async Task<GeneralResponse> AddFloor(FloorDto floordto)
         {
-            if(floordto == null) return new GeneralResponse(false, null,"Floor Dto is null",null);
-            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == floordto.RestaurantId);
+            if (floordto == null) return new GeneralResponse(false, null, "Floor Dto is null", null);
 
-            if(restaurant == null) return new GeneralResponse(false, null, "restaurant is not find", null);
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == floordto.RestaurantId);
+            if (restaurant == null) return new GeneralResponse(false, null, "Restaurant not found", null);
+
+            var lowerOrEqualFloorExists = await _dbContext.Floors
+                .AnyAsync(f => f.RestaurantId == floordto.RestaurantId && f.Number <= floordto.Number);
+
+            if (!lowerOrEqualFloorExists && floordto.Number > 1)
+                return new GeneralResponse(false, null, "Cannot add this floor. Lower-numbered floors must exist first.", null);
 
             try
             {
-                var createdFloors = new Floor { Number =floordto.Number,RestaurantId = floordto.RestaurantId,CreatedAt = DateTime.Now };
+                var createdFloor = new Floor
+                {
+                    Number = floordto.Number,
+                    RestaurantId = floordto.RestaurantId,
+                    CreatedAt = DateTime.Now
+                };
 
-                await _dbContext.Floors.AddAsync(createdFloors);
+                await _dbContext.Floors.AddAsync(createdFloor);
                 await _dbContext.SaveChangesAsync();
-                return new GeneralResponse(true,"floor added sucsesfully",null,null);
+
+                return new GeneralResponse(true, "Floor added successfully", null, null);
             }
-            catch (Exception ex) { return new GeneralResponse(false, null, ex.Message, null); }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, ex.Message, null);
+            }
         }
+
+        public async Task<GeneralResponse> AddTable(TableDto tableDto)
+        {
+            if (tableDto == null) return new GeneralResponse(false, null, "Table Dto is null", null);
+
+            var floor = await _dbContext.Floors.FirstOrDefaultAsync(f => f.Id == tableDto.FloorId);
+            if(floor == null) return new GeneralResponse(false, null, "Restaurant not found", null);
+
+            try
+            {
+                var createdTable = new Table
+                {
+                    FloorId = floor.Id,
+                    FloorNumber = floor.Number,
+                    Capacity = tableDto.Capacity,
+                    ShapeType = tableDto.ShapeType,
+                    X = tableDto.X,
+                    Y = tableDto.Y,
+                    Radius = tableDto.Radius,
+                };
+                await _dbContext.Tables.AddAsync(createdTable);
+                await _dbContext.SaveChangesAsync();
+
+                return new GeneralResponse(true, "Table added successfully", null, null);
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, ex.Message, null);
+            }
+        }
+
 
         //delete
 

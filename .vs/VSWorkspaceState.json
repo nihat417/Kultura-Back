@@ -6,8 +6,10 @@
     "\\Kultura.Application\\Dto\\RestaurntDtos",
     "\\Kultura.Application\\Repository",
     "\\Kultura.Application\\Repository\\Concrete",
+    "\\Kultura.Persistence",
+    "\\Kultura.Persistence\\Data",
     "\\Kultura.Presentation"
   ],
-  "SelectedNode": "\\Kultura.Application\\Repository\\Concrete\\RestaurantService.cs",
+  "SelectedNode": "\\Kultura.Persistence\\Data\\AppDbContext.cs",
   "PreviewInSolutionExplorer": false
 }
