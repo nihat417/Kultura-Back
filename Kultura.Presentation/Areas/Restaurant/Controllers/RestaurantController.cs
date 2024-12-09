@@ -147,6 +147,18 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             return Ok(new { message = response.Message });
         }
 
+        [HttpDelete]
+        [Route("DeleteTable")]
+        public async Task<IActionResult> DeleteTable(string tableId, string restaurantId)
+        {
+            var response = await _unitOfWork.RestaurantService.DeleteTable(tableId, restaurantId);
+
+            if (!response.Success)return BadRequest(new { message = response.Message });
+
+            return Ok(new { message = response.Message });
+        }
+
+
         #endregion
 
     }

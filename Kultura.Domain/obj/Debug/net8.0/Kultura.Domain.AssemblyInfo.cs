@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Kultura.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c307f24e2342a4518abaa014abef5f870a814cff")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7560f797eee560ae0935d6b8bf474692c51e6d0c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Kultura.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Kultura.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

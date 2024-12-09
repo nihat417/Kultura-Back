@@ -22,6 +22,7 @@ namespace Kultura.Application.Repository.Abstract
 
         //delete
         Task<GeneralResponse> DeleteFloor(FloorDto floor);
+        Task<GeneralResponse> DeleteTable(string tableId, string restaurantId);
 
         #endregion
 

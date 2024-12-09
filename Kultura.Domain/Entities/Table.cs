@@ -45,8 +45,8 @@ namespace Kultura.Domain.Entities
             }
         }
 
-        public string FloorId { get; set; } = null!;
-        public virtual Floor Floor { get; set; } = default!;
+        public string RestaurantId { get; set; } = null!;
+        public virtual Restaurant Floor { get; set; } = default!;
 
         public virtual List<Reservation> Reservations { get; set; } = new();
         public virtual List<ReservationSlot> ReservationSlots { get; set; } = new();

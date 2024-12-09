@@ -14,7 +14,7 @@ namespace Kultura.Application.Dto.RestaurntDtos
         public int FloorNumber { get; set; }
 
         [Required]
-        public string FloorId { get; set; } = null!;
+        public string RestaurantId { get; set; } = null!;
 
         [Required]
         public TableShapeType ShapeType { get; set; }

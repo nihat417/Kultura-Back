@@ -138,12 +138,12 @@ namespace Kultura.Persistence.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
                     FloorNumber = table.Column<int>(type: "int", nullable: false),
-                    FloorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RestaurantId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     X = table.Column<int>(type: "int", nullable: false),
                     Y = table.Column<int>(type: "int", nullable: false),
                     Radius = table.Column<double>(type: "float", nullable: false),
                     ShapeType = table.Column<int>(type: "int", nullable: false),
-                    RestaurantId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FloorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -153,13 +153,13 @@ namespace Kultura.Persistence.Migrations
                         name: "FK_Tables_Floors_FloorId",
                         column: x => x.FloorId,
                         principalTable: "Floors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Tables_Restaurants_RestaurantId",
                         column: x => x.RestaurantId,
                         principalTable: "Restaurants",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

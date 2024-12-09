@@ -237,7 +237,6 @@ namespace Kultura.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FloorId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("FloorNumber")
@@ -247,6 +246,7 @@ namespace Kultura.Persistence.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("RestaurantId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ShapeType")
@@ -399,15 +399,15 @@ namespace Kultura.Persistence.Migrations
 
             modelBuilder.Entity("Kultura.Domain.Entities.Table", b =>
                 {
-                    b.HasOne("Kultura.Domain.Entities.Floor", "Floor")
+                    b.HasOne("Kultura.Domain.Entities.Floor", null)
                         .WithMany("Tables")
-                        .HasForeignKey("FloorId")
+                        .HasForeignKey("FloorId");
+
+                    b.HasOne("Kultura.Domain.Entities.Restaurant", "Floor")
+                        .WithMany("Tables")
+                        .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Kultura.Domain.Entities.Restaurant", null)
-                        .WithMany("Tables")
-                        .HasForeignKey("RestaurantId");
 
                     b.Navigation("Floor");
                 });

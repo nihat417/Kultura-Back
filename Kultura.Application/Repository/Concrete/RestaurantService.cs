@@ -203,14 +203,14 @@ namespace Kultura.Application.Repository.Concrete
         {
             if (tableDto == null) return new GeneralResponse(false, null, "Table Dto is null", null);
 
-            var floor = await _dbContext.Floors.FirstOrDefaultAsync(f => f.Id == tableDto.FloorId);
+            var floor = await _dbContext.Floors.FirstOrDefaultAsync(f => f.Number== tableDto.FloorNumber);
             if(floor == null) return new GeneralResponse(false, null, "Restaurant not found", null);
 
             try
             {
                 var createdTable = new Table
                 {
-                    FloorId = floor.Id,
+                    RestaurantId = tableDto.RestaurantId,
                     FloorNumber = floor.Number,
                     Capacity = tableDto.Capacity,
                     ShapeType = tableDto.ShapeType,
@@ -238,7 +238,7 @@ namespace Kultura.Application.Repository.Concrete
 
             try
             {
-                var floor = await _dbContext.Floors.FirstOrDefaultAsync(f => f.Id == floordto.RestaurantId && f.RestaurantId == floordto.RestaurantId);
+                var floor = await _dbContext.Floors.FirstOrDefaultAsync(f => f.RestaurantId == floordto.RestaurantId);
 
                 if (floor == null)
                     return new GeneralResponse(false, null, "Floor not found or does not belong to the specified restaurant", null);
@@ -255,6 +255,25 @@ namespace Kultura.Application.Repository.Concrete
             catch (Exception ex)
             {
                 return new GeneralResponse(false, null, $"Error deleting floor: {ex.Message}", null);
+            }
+        }
+
+        public async Task<GeneralResponse> DeleteTable(string tableId, string restaurantId)
+        {
+            try
+            {
+                var table = await _dbContext.Tables.FirstOrDefaultAsync(t => t.Id == tableId && t.RestaurantId == restaurantId);
+                if (table == null)
+                    return new GeneralResponse(false, null, "Table not found or does not belong to the specified restaurant", null);
+
+                _dbContext.Tables.Remove(table);
+                await _dbContext.SaveChangesAsync();
+
+                return new GeneralResponse(true, "Table deleted successfully", null, null);
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, $"Error deleting table: {ex.Message}", null);
             }
         }
 
