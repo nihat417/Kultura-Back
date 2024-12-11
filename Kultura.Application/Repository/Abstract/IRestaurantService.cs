@@ -15,6 +15,8 @@ namespace Kultura.Application.Repository.Abstract
         //get
         Task<GeneralResponse> GetRestaurantById(string id);
         Task<GeneralResponse> GetRestaurantByEmail(string email);
+        Task<GeneralResponse> GetAllFloorId(string restaurantId);
+        Task<GeneralResponse> GetAllTablesId(string restaurantId, string floorId);
 
         //post
         Task<GeneralResponse> AddFloor(FloorDto floor);

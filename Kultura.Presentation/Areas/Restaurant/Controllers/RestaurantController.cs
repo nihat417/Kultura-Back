@@ -102,6 +102,22 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             return NotFound(response);
         }
 
+        [HttpGet("getfloorsId-restaurant/{restaurantId}")]
+        public async Task<IActionResult> GetAllFloorsIdRestaurant(string restaurantId)
+        {
+            var response = await _unitOfWork.RestaurantService.GetAllFloorId(restaurantId);
+            if (response.Success) return Ok(response);
+            return NotFound(response);
+        }
+
+        [HttpGet("getTableId-floors")]
+        public async Task<IActionResult> GetAllTablesIdFloor([FromQuery] string restaurantId, [FromQuery] string floorId)
+        {
+            var response = await _unitOfWork.RestaurantService.GetAllTablesId(restaurantId,floorId);
+            if (response.Success) return Ok(response);
+            return NotFound(response);
+        }
+
         #endregion
 
         #region post operations

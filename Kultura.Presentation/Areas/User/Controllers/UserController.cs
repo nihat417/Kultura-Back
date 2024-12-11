@@ -14,9 +14,7 @@ namespace Kultura.Presentation.Areas.User.Controllers
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
-            {
                 return Unauthorized(new { Message = "Token is missing or invalid." });
-            }
 
             var token = authorizationHeader.Substring("Bearer ".Length).Trim();
 

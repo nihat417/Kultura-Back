@@ -164,6 +164,56 @@ namespace Kultura.Application.Repository.Concrete
             }
         }
 
+        public async Task<GeneralResponse> GetAllFloorId(string restaurantId)
+        {
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == restaurantId);
+
+            if (restaurant == null) return new GeneralResponse(false, null, "Restaurant not found", null);
+
+            try
+            {
+                var floorIds = await _dbContext.Floors
+                    .Where(f => f.RestaurantId == restaurantId)
+                    .Select(f => f.Id)
+                    .ToListAsync();
+
+                if (!floorIds.Any()) return new GeneralResponse(false, null, "No floors found for this restaurant", null);
+
+                return new GeneralResponse(true, "Floors retrieved successfully", null, floorIds);
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, ex.Message, null);
+            }
+        }
+
+        public async Task<GeneralResponse> GetAllTablesId(string restaurantId,string floorId)
+        {
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == restaurantId);
+
+            if (restaurant == null) return new GeneralResponse(false, null, "Restaurant not found", null);
+
+            var floor = await _dbContext.Floors.FirstOrDefaultAsync(f => f.Id == floorId && f.RestaurantId == restaurantId);
+
+            if (floor == null) return new GeneralResponse(false, null, "Floor not found for the specified restaurant", null);
+
+            try
+            {
+                var tableIds = await _dbContext.Tables
+                    .Where(t => t.RestaurantId == restaurantId && t.FloorNumber == floor.Number)
+                    .Select(t => t.Id)
+                    .ToListAsync();
+
+                if (!tableIds.Any()) return new GeneralResponse(false, null, "No tables found for the specified floor", null);
+
+                return new GeneralResponse(true, "Tables retrieved successfully", null, tableIds);
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, ex.Message, null);
+            }
+        }
+
         //post
 
         public async Task<GeneralResponse> AddFloor(FloorDto floordto)
