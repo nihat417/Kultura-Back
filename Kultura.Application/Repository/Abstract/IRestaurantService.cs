@@ -21,10 +21,12 @@ namespace Kultura.Application.Repository.Abstract
         //post
         Task<GeneralResponse> AddFloor(FloorDto floor);
         Task<GeneralResponse> AddTable(TableDto tableDto);
+        Task<GeneralResponse> AddSlotTable(SlotDto slotDto);
 
         //delete
         Task<GeneralResponse> DeleteFloor(FloorDto floor);
         Task<GeneralResponse> DeleteTable(string tableId, string restaurantId);
+        Task<GeneralResponse> DeleteSlotAsync(string slotId);
 
         #endregion
 

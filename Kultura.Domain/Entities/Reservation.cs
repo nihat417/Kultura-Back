@@ -1,4 +1,6 @@
-﻿namespace Kultura.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Kultura.Domain.Entities
 {
     public class Reservation : BaseEntity
     {
@@ -6,6 +8,7 @@
 
         public virtual User User { get; set; } = default!;
 
+        [DisplayFormat(DataFormatString = "{0:d/M/yyyy}")]
         public DateTime ReservationDate { get; set; }
 
         public string ReceiptCode { get; set; } = Guid.NewGuid().ToString("N");

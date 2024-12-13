@@ -144,6 +144,17 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             return BadRequest(response);
         }
 
+        [HttpPost("add-slot")]
+        public async Task<IActionResult> AddSlotTable([FromBody] SlotDto slotDto)
+        {
+            if (slotDto == null) return BadRequest("Floor DTO is null.");
+
+            var response = await _unitOfWork.RestaurantService.AddSlotTable(slotDto);
+            if (response.Success) return Ok(response);
+
+            return BadRequest(response);
+        }
+
         #endregion
 
 
@@ -153,8 +164,7 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
         [Route("DeleteFloor")]
         public async Task<IActionResult> DeleteFloor([FromBody] FloorDto floordto)
         {
-            if (floordto == null)
-                return BadRequest(new { message = "FloorDto cannot be null" });
+            if (floordto == null) return BadRequest(new { message = "FloorDto cannot be null" });
 
             var response = await _unitOfWork.RestaurantService.DeleteFloor(floordto);
 
@@ -170,6 +180,16 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             var response = await _unitOfWork.RestaurantService.DeleteTable(tableId, restaurantId);
 
             if (!response.Success)return BadRequest(new { message = response.Message });
+
+            return Ok(new { message = response.Message });
+        }
+
+        [HttpDelete("delete-slot/{slotId}")]
+        public async Task<IActionResult> DeleteSlot(string slotId)
+        {
+            var response = await _unitOfWork.RestaurantService.DeleteSlotAsync(slotId);
+
+            if (!response.Success) return BadRequest(new { message = response.Message });
 
             return Ok(new { message = response.Message });
         }

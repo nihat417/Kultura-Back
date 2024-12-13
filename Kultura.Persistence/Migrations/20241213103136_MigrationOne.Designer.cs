@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kultura.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241209073408_MigrationOne")]
+    [Migration("20241213103136_MigrationOne")]
     partial class MigrationOne
     {
         /// <inheritdoc />
