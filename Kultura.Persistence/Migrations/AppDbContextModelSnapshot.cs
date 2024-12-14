@@ -25,6 +25,31 @@ namespace Kultura.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Kultura.Domain.Entities.Favourite", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RestaurantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favourites");
+                });
+
             modelBuilder.Entity("Kultura.Domain.Entities.Floor", b =>
                 {
                     b.Property<string>("Id")
@@ -275,6 +300,9 @@ namespace Kultura.Persistence.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -316,6 +344,25 @@ namespace Kultura.Persistence.Migrations
                     b.HasIndex("RolesId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Kultura.Domain.Entities.Favourite", b =>
+                {
+                    b.HasOne("Kultura.Domain.Entities.Restaurant", "Restaurant")
+                        .WithMany()
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kultura.Domain.Entities.User", "User")
+                        .WithMany("Favorites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Restaurant");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Kultura.Domain.Entities.Floor", b =>
@@ -460,6 +507,8 @@ namespace Kultura.Persistence.Migrations
 
             modelBuilder.Entity("Kultura.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Favorites");
+
                     b.Navigation("Reservations");
 
                     b.Navigation("Reviews");

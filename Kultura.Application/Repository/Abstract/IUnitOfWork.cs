@@ -7,6 +7,7 @@ namespace Kultura.Application.Repository.Abstract
     {
         IAuthService AuthService { get; }
         IRestaurantService RestaurantService { get; }
+        IUserService UserService { get; }
         IEmailService EmailService { get; }
         IJwtTokenService JwtTokenService { get; }
             

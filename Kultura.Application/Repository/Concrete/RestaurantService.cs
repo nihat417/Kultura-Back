@@ -1,4 +1,5 @@
-﻿using Kultura.Application.Dto.RestaurntDtos;
+﻿using Kultura.Application.Dto;
+using Kultura.Application.Dto.RestaurntDtos;
 using Kultura.Application.Model;
 using Kultura.Application.Repository.Abstract;
 using Kultura.Domain.Entities;
@@ -214,6 +215,35 @@ namespace Kultura.Application.Repository.Concrete
             }
         }
 
+        public async Task<GeneralResponse> GetTableSlotsIdAsync(string tableId)
+        {
+            if (string.IsNullOrEmpty(tableId))return new GeneralResponse(false, null, "Table ID cannot be null or empty.", null);
+
+            var table = await _dbContext.Tables.FirstOrDefaultAsync(t => t.Id == tableId);
+
+            if (table == null) return new GeneralResponse(false, null, "table not found.", null);
+
+            try
+            {
+                var tableSlots = await _dbContext.ReservationSlots
+                    .Where(rs => rs.TableId == tableId)
+                    .Select(rs => new
+                    {
+                        rs.Id,
+                        StartTime = rs.StartTime.ToString(@"hh\:mm"), 
+                        EndTime = rs.EndTime.ToString(@"hh\:mm"),     
+                        rs.IsReserved
+                    })
+                    .ToListAsync();
+
+                return new GeneralResponse(true, "Table slots retrieved successfully.", null, tableSlots);
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, $"Error retrieving table slots: {ex.Message}", null);
+            }
+        }
+
         //post
 
         public async Task<GeneralResponse> AddFloor(FloorDto floordto)
@@ -258,7 +288,6 @@ namespace Kultura.Application.Repository.Concrete
             return distance < (existingTable.Radius + newTable.Radius);
         }
 
-
         public async Task<GeneralResponse> AddTable(TableDto tableDto)
         {
             if (tableDto == null) return new GeneralResponse(false, null, "Table DTO is null", null);
@@ -296,7 +325,6 @@ namespace Kultura.Application.Repository.Concrete
             }
         }
 
-
         public async Task<GeneralResponse> AddSlotTable(SlotDto slotDto)
         {
             if (slotDto.startTime >= slotDto.endTime) return new GeneralResponse(false,null,"Start time must be earlier than end time.",null);
@@ -323,6 +351,127 @@ namespace Kultura.Application.Repository.Concrete
 
             return new GeneralResponse(true, "Reservation slot added successfully.", null, newSlot);
         }
+
+        public async Task<GeneralResponse> AddSlotToFloorTables(AddSlotRequest request)
+        {
+            if (request.StartTime >= request.EndTime)
+                return new GeneralResponse(false, null, "Start time must be earlier than end time.", null);
+
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == request.RestaurantId);
+            if (restaurant == null)
+                return new GeneralResponse(false, null, "Restaurant not found", null);
+
+            var floor = await _dbContext.Floors.FirstOrDefaultAsync(f => f.Number == request.FloorNumber && f.RestaurantId == request.RestaurantId);
+            if (floor == null)
+                return new GeneralResponse(false, null, $"Floor with number {request.FloorNumber} not found for the specified restaurant.", null);
+
+            var floorTables = await _dbContext.Tables
+                .Where(t => t.RestaurantId == request.RestaurantId && t.FloorNumber == request.FloorNumber)
+                .ToListAsync();
+
+            if (!floorTables.Any())
+                return new GeneralResponse(false, null, $"No tables found on floor {request.FloorNumber}.", null);
+
+            var conflictingSlots = new List<string>();
+            foreach (var table in floorTables)
+            {
+                var existingSlot = await _dbContext.ReservationSlots
+                    .FirstOrDefaultAsync(slot =>
+                        slot.TableId == table.Id &&
+                        ((request.StartTime >= slot.StartTime && request.StartTime < slot.EndTime) ||
+                         (request.EndTime > slot.StartTime && request.EndTime <= slot.EndTime)));
+
+                if (existingSlot != null)
+                {
+                    conflictingSlots.Add($"Table ID {table.Id} already has a conflicting reservation slot.");
+                    continue;
+                }
+
+                var newSlot = new ReservationSlot
+                {
+                    TableId = table.Id,
+                    StartTime = request.StartTime,
+                    EndTime = request.EndTime,
+                    IsReserved = false
+                };
+
+                _dbContext.ReservationSlots.Add(newSlot);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            if (conflictingSlots.Any())
+            {
+                return new GeneralResponse(
+                    false,
+                    null,
+                    "Some slots were not added due to conflicts.",
+                    new { Conflicts = conflictingSlots });
+            }
+
+            return new GeneralResponse(
+                true,
+                $"Reservation slots added successfully for all tables on floor {request.FloorNumber}.",
+                null,
+                null);
+        }
+
+        public async Task<GeneralResponse> DeleteSlotsFromFloorTables(DeleteSlotRequest request)
+        {
+            if (request.StartTime >= request.EndTime)
+                return new GeneralResponse(false, null, "Start time must be earlier than end time.", null);
+
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == request.RestaurantId);
+            if (restaurant == null)
+                return new GeneralResponse(false, null, "Restaurant not found", null);
+
+            var floor = await _dbContext.Floors.FirstOrDefaultAsync(f => f.Number == request.FloorNumber && f.RestaurantId == request.RestaurantId);
+            if (floor == null)
+                return new GeneralResponse(false, null, $"Floor with number {request.FloorNumber} not found for the specified restaurant.", null);
+
+            var floorTables = await _dbContext.Tables
+                .Where(t => t.RestaurantId == request.RestaurantId && t.FloorNumber == request.FloorNumber)
+                .ToListAsync();
+
+            if (!floorTables.Any())
+                return new GeneralResponse(false, null, $"No tables found on floor {request.FloorNumber}.", null);
+
+            var slotsToDelete = new List<ReservationSlot>();
+
+            foreach (var table in floorTables)
+            {
+                var slots = await _dbContext.ReservationSlots
+                    .Where(slot =>
+                        slot.TableId == table.Id &&
+                        slot.StartTime >= request.StartTime &&
+                        slot.EndTime <= request.EndTime)
+                    .ToListAsync();
+
+                if (slots.Any())
+                {
+                    slotsToDelete.AddRange(slots);
+                }
+            }
+
+            if (!slotsToDelete.Any())
+            {
+                return new GeneralResponse(
+                    false,
+                    null,
+                    $"No reservation slots found on floor {request.FloorNumber} within the specified time range.",
+                    null);
+            }
+
+            _dbContext.ReservationSlots.RemoveRange(slotsToDelete);
+            await _dbContext.SaveChangesAsync();
+
+            return new GeneralResponse(
+                true,
+                $"Successfully deleted {slotsToDelete.Count} reservation slots on floor {request.FloorNumber}.",
+                null,
+                null);
+        }
+
 
 
         //delete
@@ -385,7 +534,6 @@ namespace Kultura.Application.Repository.Concrete
 
             return new GeneralResponse(true, "Reservation slot deleted successfully.", null, null);
         }
-
 
 
         #endregion

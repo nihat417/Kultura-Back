@@ -10,6 +10,8 @@
             public string Password { get; set; } = null!;
             public string PasswordHash { get; set; } = null!;
 
+            public string? Country { get; set; }
+
             public bool EmailConfirmed { get; set; }
 
             public int Age { get; set; }
@@ -20,5 +22,6 @@
 
             public virtual List<Review> Reviews { get; set; } = new();
             public virtual List<Reservation> Reservations { get; set; } = new();
-        }
+            public virtual List<Favourite> Favorites { get; set; } = new();
+    }
     }

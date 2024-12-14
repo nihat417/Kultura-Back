@@ -1,4 +1,5 @@
-﻿using Kultura.Application.Dto.RestaurntDtos;
+﻿using Kultura.Application.Dto;
+using Kultura.Application.Dto.RestaurntDtos;
 using Kultura.Domain.Entities;
 using static Kultura.Application.Model.Responses.ServiceResponses;
 
@@ -17,16 +18,19 @@ namespace Kultura.Application.Repository.Abstract
         Task<GeneralResponse> GetRestaurantByEmail(string email);
         Task<GeneralResponse> GetAllFloorId(string restaurantId);
         Task<GeneralResponse> GetAllTablesId(string restaurantId, string floorId);
+        Task<GeneralResponse> GetTableSlotsIdAsync(string tableId);
 
         //post
         Task<GeneralResponse> AddFloor(FloorDto floor);
         Task<GeneralResponse> AddTable(TableDto tableDto);
         Task<GeneralResponse> AddSlotTable(SlotDto slotDto);
+        Task<GeneralResponse> AddSlotToFloorTables(AddSlotRequest request);
 
         //delete
         Task<GeneralResponse> DeleteFloor(FloorDto floor);
         Task<GeneralResponse> DeleteTable(string tableId, string restaurantId);
         Task<GeneralResponse> DeleteSlotAsync(string slotId);
+        Task<GeneralResponse> DeleteSlotsFromFloorTables(DeleteSlotRequest request);
 
         #endregion
 

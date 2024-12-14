@@ -19,6 +19,16 @@ namespace Kultura.Persistence.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Favourite>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.Favorites)
+                .HasForeignKey(f => f.UserId);
+
+            modelBuilder.Entity<Favourite>()
+               .HasOne(f => f.Restaurant)
+               .WithMany()
+               .HasForeignKey(f => f.RestaurantId);
+
             modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.Table)
                 .WithMany(t => t.Reservations)
@@ -84,6 +94,7 @@ namespace Kultura.Persistence.Data
         public DbSet<Floor> Floors { get; set; } = default!;
         public DbSet<Table> Tables { get; set; } = default!;
         public DbSet<Reservation> Reservations { get; set; } = default!;
+        public DbSet<Favourite> Favourites { get; set; } = default!;
         public DbSet<Review> Reviews { get; set; } = default!;
         public DbSet<ReservationSlot> ReservationSlots { get; set; } = default!;
     }

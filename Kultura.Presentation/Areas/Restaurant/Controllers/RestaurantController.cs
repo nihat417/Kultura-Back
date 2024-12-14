@@ -1,4 +1,5 @@
-﻿using Kultura.Application.Dto.RestaurntDtos;
+﻿using Kultura.Application.Dto;
+using Kultura.Application.Dto.RestaurntDtos;
 using Kultura.Application.Model;
 using Kultura.Application.Repository.Abstract;
 using Microsoft.AspNetCore.Mvc;
@@ -118,6 +119,17 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             return NotFound(response);
         }
 
+        [HttpGet("get-slot/{tableId}")]
+        public async Task<IActionResult> GetSlotById(string tableId)
+        {
+            var response = await _unitOfWork.RestaurantService.GetTableSlotsIdAsync(tableId);
+
+            if (!response.Success) return BadRequest(response);
+
+            return Ok(response);
+        }
+
+
         #endregion
 
         #region post operations
@@ -130,7 +142,7 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             var response = await _unitOfWork.RestaurantService.AddFloor(floorDto);
             if (response.Success) return Ok(response);
 
-            return BadRequest(response); 
+            return BadRequest(response);
         }
 
         [HttpPost("add-Table")]
@@ -155,8 +167,30 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             return BadRequest(response);
         }
 
-        #endregion
+        [HttpPost("add-slot-to-floor-tables")]
+        public async Task<IActionResult> AddSlotToFloor([FromBody] AddSlotRequest request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var response = await _unitOfWork.RestaurantService.AddSlotToFloorTables(request);
+            if (!response.Success) return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [HttpDelete("delete-slots-from-floor-tables")]
+        public async Task<IActionResult> DeleteSlotsFromFloor([FromBody] DeleteSlotRequest request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var response = await _unitOfWork.RestaurantService.DeleteSlotsFromFloorTables(request);
+            if (!response.Success) return BadRequest(response);
+
+            return Ok(response);
+        }
+
+
+        #endregion
 
         #region delete
 

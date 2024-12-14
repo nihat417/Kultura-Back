@@ -14,6 +14,7 @@ namespace Kultura.Application.Repository.Concrete
 
         private IAuthService? _authService;
         private IRestaurantService _restaurantService;
+        private IUserService? _userService;
         private IEmailService? _emailService;
         /*private IAccountService? _accountService;*/
 
@@ -27,6 +28,7 @@ namespace Kultura.Application.Repository.Concrete
 
         public IAuthService AuthService => _authService ??= new AuthService(_context ,_jwtTokenService);
         public IRestaurantService RestaurantService => _restaurantService ??= new RestaurantService(_context , _jwtTokenService);
+        public IUserService UserService => _userService ??= new UserService(_context);
         public IEmailService EmailService => _emailService ??= new EmailService(_emailConfiguration);
         public IJwtTokenService JwtTokenService => _jwtTokenService;
         /*public IAccountService AccountService => _accountService ??= new AccountService(_context, _userManager);*/
