@@ -3,6 +3,7 @@ using Kultura.Application.Dto.RestaurntDtos;
 using Kultura.Application.Model;
 using Kultura.Application.Repository.Abstract;
 using Kultura.Domain.Entities;
+using Kultura.Domain.Enums;
 using Kultura.Persistence.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -151,7 +152,7 @@ namespace Kultura.Application.Repository.Concrete
 
         public async Task<GeneralResponse> GetRestaurantByEmail(string email)
         {
-            if (!string.IsNullOrWhiteSpace(email)) return new GeneralResponse(false,null,"email is null", null);
+            if (string.IsNullOrWhiteSpace(email)) return new GeneralResponse(false,null,"email is null", null);
 
             try
             {
@@ -242,6 +243,22 @@ namespace Kultura.Application.Repository.Concrete
             {
                 return new GeneralResponse(false, null, $"Error retrieving table slots: {ex.Message}", null);
             }
+        }
+
+        public async Task<GeneralResponse> CompleteReservationAsync(string reservationId)
+        {
+            var reservation = await _dbContext.Reservations.FindAsync(reservationId);
+            if (reservation == null)
+                return new GeneralResponse(false, null, "Reservation not found.", null);
+
+            if (reservation.Status != ReservationStatus.Active)
+                return new GeneralResponse(false, null, "Only active reservations can be completed.", null);
+
+            reservation.Status = ReservationStatus.NoActive;
+
+            await _dbContext.SaveChangesAsync();
+
+            return new GeneralResponse(true, "Reservation completed successfully.", null, reservation);
         }
 
         //post
@@ -471,7 +488,6 @@ namespace Kultura.Application.Repository.Concrete
                 null,
                 null);
         }
-
 
 
         //delete

@@ -1,6 +1,7 @@
 ﻿using Kultura.Application.Dto;
 using Kultura.Application.Repository.Abstract;
 using Kultura.Domain.Entities;
+using Kultura.Domain.Enums;
 using Kultura.Persistence.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +44,41 @@ namespace Kultura.Application.Repository.Concrete
             return new GeneralResponse(true, "Favourites retrieved successfully.", null, favourites);
         }
 
+        public async Task<GeneralResponse> GetReserveHistoryAsync(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return new GeneralResponse(false, null, "User ID cannot be empty.", null);
+
+            var user = await _dbContext.Users.FindAsync(userId);
+            if (user == null)
+                return new GeneralResponse(false, null, "User not found.", null);
+
+            var reservations = await _dbContext.Reservations
+                .Where(r => r.UserId == userId)
+                .Include(r => r.Table)
+                .ThenInclude(t => t.Floor)
+                .Include(r => r.Slot)
+                .OrderByDescending(r => r.ReservationDate)
+                .ToListAsync();
+
+            if (!reservations.Any())
+                return new GeneralResponse(false, null, "No reservations found.", null);
+
+            var reservationHistory = reservations.Select(r => new
+            {
+                r.Id,
+                r.ReservationDate,
+                r.Status,
+                //RestaurantName = r.Table?.Restaurant?.Name,
+                //RestaurantAddress = r.Table?.Restaurant?.Location,
+                //RestaurantMoneyMin = r.Table?.Restaurant?.MinPrice,
+                //RestaurantMoneyMax = r.Table?.Restaurant?.MaxPrice,
+                SlotStartTime = r.Slot?.StartTime,
+                SlotEndTime = r.Slot?.EndTime
+            });
+
+            return new GeneralResponse(true, "Reservation history retrieved successfully.", null, reservationHistory);
+        }
 
 
         #endregion
@@ -59,10 +95,16 @@ namespace Kultura.Application.Repository.Concrete
             if (slot == null || slot.IsReserved)
                 return new GeneralResponse(false, null, "Slot is not available.", null);
 
-            var existingReservation = await _dbContext.Reservations.FirstOrDefaultAsync(r => r.SlotId == reservationDto.SlotId);
+            var existingReservation = await _dbContext.Reservations
+                .FirstOrDefaultAsync(r =>
+                    r.UserId == reservationDto.UserId &&
+                    r.Status == ReservationStatus.Active &&
+                    r.ReservationDate == reservationDto.ReservationDate &&
+                    r.TableId == reservationDto.TableId &&
+                    r.SlotId == reservationDto.SlotId);
 
             if (existingReservation != null)
-                return new GeneralResponse(false, null, "Slot is already reserved by another user.", null);
+                return new GeneralResponse(false, null, "Slot is already reserved by the user.", null);
 
             var currentDate = DateTime.UtcNow.Date;
             var currentTime = DateTime.UtcNow.TimeOfDay;
@@ -79,6 +121,7 @@ namespace Kultura.Application.Repository.Concrete
                 UserId = reservationDto.UserId,
                 ReservationDate = reservationDto.ReservationDate,
                 SlotId = reservationDto.SlotId,
+                Status = ReservationStatus.Active
             };
 
             slot.IsReserved = true;
@@ -87,6 +130,27 @@ namespace Kultura.Application.Repository.Concrete
             await _dbContext.SaveChangesAsync();
 
             return new GeneralResponse(true, "Reservation added successfully.", null, reservation);
+        }
+
+
+        public async Task<GeneralResponse> CancelReservationAsync(string reservationId)
+        {
+            var reservation = await _dbContext.Reservations.FindAsync(reservationId);
+            if (reservation == null)
+                return new GeneralResponse(false, null, "Reservation not found.", null);
+
+            if (reservation.Status == ReservationStatus.Canceled)
+                return new GeneralResponse(false, null, "Reservation is already canceled.", null);
+
+            reservation.Status = ReservationStatus.Canceled;
+
+            var slot = await _dbContext.ReservationSlots.FindAsync(reservation.SlotId);
+            if (slot != null)
+                slot.IsReserved = false;
+
+            await _dbContext.SaveChangesAsync();
+
+            return new GeneralResponse(true, "Reservation canceled successfully.", null, reservation);
         }
 
         public async Task<GeneralResponse> SearchRestaurantsAsync(string search)
@@ -187,16 +251,24 @@ namespace Kultura.Application.Repository.Concrete
             if (string.IsNullOrEmpty(restaurantId))
                 return new GeneralResponse(false, null, "Restaurant ID cannot be empty.", null);
 
-            var favourite = await _dbContext.Favourites
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == restaurantId);
+            if (restaurant == null)
+                return new GeneralResponse(false, null, "Restaurant not found.", null);
+
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (string.IsNullOrEmpty(userId) || user == null)
+                return new GeneralResponse(false, null, "User is not authenticated.", null);
+
+            var existingFavourite = await _dbContext.Favourites
                 .FirstOrDefaultAsync(f => f.UserId == userId && f.RestaurantId == restaurantId);
 
-            if (favourite == null)
-                return new GeneralResponse(false, null, "Favourite not found.", null);
+            if (existingFavourite == null)
+                return new GeneralResponse(false, null, "This restaurant is not in your favourites.", null);
 
-            _dbContext.Favourites.Remove(favourite);
+            _dbContext.Favourites.Remove(existingFavourite);
             await _dbContext.SaveChangesAsync();
 
-            return new GeneralResponse(true, "Favourite removed successfully.", null, null);
+            return new GeneralResponse(true, "Restaurant removed from favourites successfully.", null, null);
         }
 
 

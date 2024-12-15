@@ -63,7 +63,6 @@ namespace Kultura.Persistence.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -100,6 +99,27 @@ namespace Kultura.Persistence.Migrations
                     table.PrimaryKey("PK_Floors", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Floors_Restaurants_RestaurantId",
+                        column: x => x.RestaurantId,
+                        principalTable: "Restaurants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SocialLinks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Platform = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RestaurantId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SocialLinks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SocialLinks_Restaurants_RestaurantId",
                         column: x => x.RestaurantId,
                         principalTable: "Restaurants",
                         principalColumn: "Id",
@@ -219,6 +239,7 @@ namespace Kultura.Persistence.Migrations
                     ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReceiptCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SlotId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     TableId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     RestaurantId = table.Column<string>(type: "nvarchar(450)", nullable: true),
@@ -297,6 +318,11 @@ namespace Kultura.Persistence.Migrations
                 column: "RolesId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SocialLinks_RestaurantId",
+                table: "SocialLinks",
+                column: "RestaurantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tables_FloorId",
                 table: "Tables",
                 column: "FloorId");
@@ -323,6 +349,9 @@ namespace Kultura.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Reviews");
+
+            migrationBuilder.DropTable(
+                name: "SocialLinks");
 
             migrationBuilder.DropTable(
                 name: "ReservationSlots");

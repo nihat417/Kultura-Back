@@ -29,6 +29,11 @@ namespace Kultura.Persistence.Data
                .WithMany()
                .HasForeignKey(f => f.RestaurantId);
 
+            modelBuilder.Entity<Restaurant>()
+                .HasMany(r => r.SocialLinks)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.Table)
                 .WithMany(t => t.Reservations)
@@ -95,6 +100,7 @@ namespace Kultura.Persistence.Data
         public DbSet<Table> Tables { get; set; } = default!;
         public DbSet<Reservation> Reservations { get; set; } = default!;
         public DbSet<Favourite> Favourites { get; set; } = default!;
+        public DbSet<SocialLink> SocialLinks { get; set; } = null!;
         public DbSet<Review> Reviews { get; set; } = default!;
         public DbSet<ReservationSlot> ReservationSlots { get; set; } = default!;
     }

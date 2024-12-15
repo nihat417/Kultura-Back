@@ -20,6 +20,7 @@
         public virtual List<Floor> Floors { get; set; } = new List<Floor>();
         public virtual List<Review> Reviews { get; set; } = new List<Review>();
         public virtual List<Reservation> Reservations { get; set; } = new List<Reservation>();
+        public virtual ICollection<SocialLink> SocialLinks { get; set; } = new List<SocialLink>();
 
         private TimeSpan _openingTime;
         private TimeSpan _closingTime;

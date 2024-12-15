@@ -8,6 +8,7 @@
 
         public string Comment { get; set; } = string.Empty;
 
+
         private int _rating;
         public int Rating
         {

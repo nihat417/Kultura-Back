@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Kultura.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Kultura.Domain.Entities
 {
@@ -15,6 +16,7 @@ namespace Kultura.Domain.Entities
 
         public string SlotId { get; set; } = null!;
         public virtual ReservationSlot Slot { get; set; } = default!;
+        public ReservationStatus Status { get; set; } = ReservationStatus.Active;
 
         public string? TableId { get; set; } 
         public string? UserId { get; set; }

@@ -42,6 +42,14 @@ namespace Kultura.Presentation.Areas.User.Controllers
             return Ok(result);
         }
 
+        [HttpGet("getAll-ReserveHistory/{userId}")]
+        public async Task<IActionResult> GetRserveHistory([FromQuery] string userId)
+        {
+            var result = await _unitOfWork.UserService.GetReserveHistoryAsync(userId);
+            if (!result.Success) return NotFound();
+            return Ok(result);
+        }
+
         #endregion
 
         #region post
@@ -52,6 +60,17 @@ namespace Kultura.Presentation.Areas.User.Controllers
             if (reservationDto == null)return BadRequest();
 
             var response = await _unitOfWork.UserService.AddReservationAsync(reservationDto);
+            if (!response.Success) return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [HttpPost("{reservationId}/cancel")]
+        public async Task<IActionResult> CancelReservation(string reservationId)
+        {
+            if (string.IsNullOrEmpty(reservationId)) return BadRequest();
+
+            var response = await _unitOfWork.UserService.CancelReservationAsync(reservationId);
             if (!response.Success) return BadRequest(response);
 
             return Ok(response);
@@ -94,7 +113,7 @@ namespace Kultura.Presentation.Areas.User.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete-favourite")]
         public async Task<IActionResult> DeleteFavourite([FromQuery] string userId, [FromQuery] string restaurantId)
         {
             var result = await _unitOfWork.UserService.DeleteFavourite(userId, restaurantId);

@@ -178,6 +178,21 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             return Ok(response);
         }
 
+
+        [HttpPost("{reservationId}/complete")]
+        public async Task<IActionResult> CompleteReservation(string reservationId)
+        {
+            if (reservationId == null) return BadRequest();
+            var response = await _unitOfWork.RestaurantService.CompleteReservationAsync(reservationId);
+            if (!response.Success)return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        #endregion
+
+        #region delete
+
         [HttpDelete("delete-slots-from-floor-tables")]
         public async Task<IActionResult> DeleteSlotsFromFloor([FromBody] DeleteSlotRequest request)
         {
@@ -188,11 +203,6 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
 
             return Ok(response);
         }
-
-
-        #endregion
-
-        #region delete
 
         [HttpDelete]
         [Route("DeleteFloor")]

@@ -10,9 +10,6 @@ namespace Kultura.Application.Dto.AuthDto
         public string Email { get; set; } = null!;
 
         [Required]
-        public string UserName { get; set; } = null!;
-
-        [Required]
         public string FullName { get; set; } = null!;
 
         private int _age;

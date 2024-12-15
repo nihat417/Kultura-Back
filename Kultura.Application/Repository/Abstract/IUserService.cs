@@ -5,11 +5,15 @@ namespace Kultura.Application.Repository.Abstract
 {
     public interface IUserService
     {
-        Task<GeneralResponse> AddReservationAsync(ReservationDto reservationDto);
-        Task<GeneralResponse> DeleteReservationAsync(string reservationId);
-        Task<GeneralResponse> SearchRestaurantsAsync(string search);
-        Task<GeneralResponse> AddFavourites(string userId,string restaurantId);
-        Task<GeneralResponse> DeleteFavourite(string userId, string restaurantId);
         Task<GeneralResponse> GetAllFavourites(string userId);
+        Task<GeneralResponse> SearchRestaurantsAsync(string search);
+        Task<GeneralResponse> GetReserveHistoryAsync(string userId);
+
+        Task<GeneralResponse> AddReservationAsync(ReservationDto reservationDto);
+        Task<GeneralResponse> AddFavourites(string userId,string restaurantId);
+        Task<GeneralResponse> CancelReservationAsync(string reservationId);
+
+        Task<GeneralResponse> DeleteReservationAsync(string reservationId);
+        Task<GeneralResponse> DeleteFavourite(string userId, string restaurantId);
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kultura.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241213153300_MigrationOne")]
+    [Migration("20241215143453_MigrationOne")]
     partial class MigrationOne
     {
         /// <inheritdoc />
@@ -96,6 +96,9 @@ namespace Kultura.Persistence.Migrations
                     b.Property<string>("SlotId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("TableId")
                         .HasColumnType("nvarchar(450)");
@@ -253,6 +256,32 @@ namespace Kultura.Persistence.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("Kultura.Domain.Entities.SocialLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Platform")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RestaurantId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.ToTable("SocialLinks");
+                });
+
             modelBuilder.Entity("Kultura.Domain.Entities.Table", b =>
                 {
                     b.Property<string>("Id")
@@ -337,10 +366,6 @@ namespace Kultura.Persistence.Migrations
                     b.Property<string>("RolesId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -447,6 +472,14 @@ namespace Kultura.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Kultura.Domain.Entities.SocialLink", b =>
+                {
+                    b.HasOne("Kultura.Domain.Entities.Restaurant", null)
+                        .WithMany("SocialLinks")
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Kultura.Domain.Entities.Table", b =>
                 {
                     b.HasOne("Kultura.Domain.Entities.Floor", null)
@@ -490,6 +523,8 @@ namespace Kultura.Persistence.Migrations
                     b.Navigation("Reservations");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("SocialLinks");
 
                     b.Navigation("Tables");
                 });

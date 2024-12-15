@@ -26,7 +26,7 @@ namespace Kultura.Application.Repository.Concrete
             var verificationResult = passwordHasher.VerifyHashedPassword(getUser, getUser.PasswordHash, loginDto.Password);
             if (verificationResult != PasswordVerificationResult.Success) return new LoginResponse(false, null, null, "Invalid email or password");
 
-            var userSession = new UserSession(getUser.Id, getUser.Username,getUser.FullName, getUser.Age, getUser.Email,"User");
+            var userSession = new UserSession(getUser.Id, getUser.Country,getUser.FullName, getUser.Age, getUser.Email,"User");
             (string accsesToken, string refreshToken) = _jwtTokenService.CreateToken(userSession);
 
             return new LoginResponse(true, accsesToken!, refreshToken, "Login completed");
@@ -43,7 +43,6 @@ namespace Kultura.Application.Repository.Concrete
 
             var newUser = new User()
             {
-                Username = registerDto.UserName,
                 FullName = registerDto.FullName,
                 Email = registerDto.Email,
                 Age = registerDto.Age,
@@ -65,7 +64,6 @@ namespace Kultura.Application.Repository.Concrete
 
         #endregion
 
-
         #region operation servicess
 
         public async Task<GeneralResponse> FindEmailUser(string email)
@@ -85,7 +83,6 @@ namespace Kultura.Application.Repository.Concrete
         }
 
         #endregion
-
 
         #region email token services
 
@@ -122,7 +119,6 @@ namespace Kultura.Application.Repository.Concrete
         }
 
         #endregion
-
 
         public async Task UpdateAsync(User user)
         {
