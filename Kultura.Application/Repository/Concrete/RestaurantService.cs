@@ -156,7 +156,7 @@ namespace Kultura.Application.Repository.Concrete
 
             try
             {
-                var restaurant = await _dbContext.Restaurants.FindAsync(email);
+                var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r =>r.Email == email);
                 if (restaurant == null) return new GeneralResponse(false, null, "Restaurant not found", null);
                 return new GeneralResponse(true, "Restaurant finded", null, restaurant);
             }

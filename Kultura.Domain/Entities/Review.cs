@@ -2,12 +2,13 @@
 {
     public class Review : BaseEntity
     {
+        public string UserId { get; set; } = null!;
         public virtual User User { get; set; } = default!;
 
+        public string RestaurantId { get; set; } = null!;
         public virtual Restaurant Restaurant { get; set; } = default!;
 
         public string Comment { get; set; } = string.Empty;
-
 
         private int _rating;
         public int Rating

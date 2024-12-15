@@ -98,6 +98,17 @@ namespace Kultura.Presentation.Areas.User.Controllers
             return Ok(response);
         }
 
+        [HttpPost("add-review")]
+        public async Task<IActionResult> AddReview([FromBody] AddReviewDto addReviewDto)
+        {
+            if (!ModelState.IsValid) return BadRequest("Invalid input data.");
+
+            var response = await _unitOfWork.UserService.AddReviewAsync(addReviewDto.UserId, addReviewDto.RestaurantId, addReviewDto.Comment, addReviewDto.Rating);
+            if (!response.Success) return BadRequest(response);
+
+            return Ok(response);
+        }
+
         #endregion
 
         #region delete

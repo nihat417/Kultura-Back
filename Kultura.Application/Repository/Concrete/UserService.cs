@@ -132,7 +132,6 @@ namespace Kultura.Application.Repository.Concrete
             return new GeneralResponse(true, "Reservation added successfully.", null, reservation);
         }
 
-
         public async Task<GeneralResponse> CancelReservationAsync(string reservationId)
         {
             var reservation = await _dbContext.Reservations.FindAsync(reservationId);
@@ -218,6 +217,42 @@ namespace Kultura.Application.Repository.Concrete
             return new GeneralResponse(true, "Restaurant added to favourites successfully.",null, favourite);
 
         }
+
+        public async Task<GeneralResponse> AddReviewAsync(string userId, string restaurantId, string comment, int rating)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+            if (user == null)
+                return new GeneralResponse(false, null, "User not found.", null);
+
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == restaurantId);
+            if (restaurant == null)
+                return new GeneralResponse(false, null, "Restaurant not found.", null);
+
+            if (rating < 1 || rating > 5)
+                return new GeneralResponse(false, null, "Rating must be between 1 and 5.", null);
+
+            var hasReservation = await _dbContext.Reservations
+                .AnyAsync(r => r.UserId == userId &&
+                               r.Table.RestaurantId == restaurantId &&
+                               (r.Status == ReservationStatus.Active || r.Status == ReservationStatus.NoActive));
+
+            if (!hasReservation)
+                return new GeneralResponse(false, null, "User has no reservations for this restaurant.", null);
+
+            var review = new Review
+            {
+                User = user,
+                Restaurant = restaurant,
+                Comment = comment,
+                Rating = rating
+            };
+
+            await _dbContext.Reviews.AddAsync(review);
+            await _dbContext.SaveChangesAsync();
+
+            return new GeneralResponse(true, "Review added successfully.", null, review);
+        }
+
 
 
         #endregion
