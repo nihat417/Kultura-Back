@@ -139,10 +139,33 @@ namespace Kultura.Application.Repository.Concrete
 
             try
             {
-                var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == id);
-                if (restaurant == null) return new GeneralResponse(false, null, "Restaurant not found", null);
+                var restaurantData = await _dbContext.Restaurants
+                    .AsNoTracking()
+                    .Include(r => r.Reviews)
+                    .Where(r => r.Id == id)
+                    .Select(r => new
+                    {
+                        r.Name,
+                        r.Location,
+                        r.Description,
+                        r.MainPhoto,
+                        r.Email,
+                        r.PhoneNumber,
+                        r.Cuisines,
+                        r.OpeningTime,
+                        r.ClosingTime,
+                        r.MinPrice,
+                        r.MaxPrice,
+                        AverageRating = r.Reviews.Any()
+                    ? Math.Round(r.Reviews.Average(review => review.Rating), 1)
+                    : 0
+                    })
+                    .FirstOrDefaultAsync();
 
-                return new GeneralResponse(true, "Restaurant finded", null, restaurant);
+                if (restaurantData == null)
+                    return new GeneralResponse(false, null, "Restaurant not found", null);
+
+                return new GeneralResponse(true, "Restaurant found", null, restaurantData);
             }
             catch (Exception ex)
             {
@@ -152,19 +175,45 @@ namespace Kultura.Application.Repository.Concrete
 
         public async Task<GeneralResponse> GetRestaurantByEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email)) return new GeneralResponse(false,null,"email is null", null);
+            if (string.IsNullOrWhiteSpace(email))
+                return new GeneralResponse(false, null, "Email is null or empty", null);
 
             try
             {
-                var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r =>r.Email == email);
-                if (restaurant == null) return new GeneralResponse(false, null, "Restaurant not found", null);
-                return new GeneralResponse(true, "Restaurant finded", null, restaurant);
+                var restaurantData = await _dbContext.Restaurants
+                    .AsNoTracking()
+                    .Include(r => r.Reviews)
+                    .Where(r => r.Email == email)
+                    .Select(r => new
+                    {
+                        r.Name,
+                        r.Location,
+                        r.Description,
+                        r.MainPhoto,
+                        r.Email,
+                        r.PhoneNumber,
+                        r.Cuisines,
+                        r.OpeningTime,
+                        r.ClosingTime,
+                        r.MinPrice,
+                        r.MaxPrice,
+                        AverageRating = r.Reviews.Any()
+                            ? Math.Round(r.Reviews.Average(review => review.Rating), 1)
+                            : 0
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (restaurantData == null)
+                    return new GeneralResponse(false, null, "Restaurant not found", null);
+
+                return new GeneralResponse(true, "Restaurant found", null, restaurantData);
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 return new GeneralResponse(false, null, $"Error retrieving restaurant: {ex.Message}", null);
             }
         }
+
 
         public async Task<GeneralResponse> GetAllFloorId(string restaurantId)
         {
