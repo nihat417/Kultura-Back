@@ -3,10 +3,10 @@
     public class Review : BaseEntity
     {
         public string UserId { get; set; } = null!;
-        public virtual User User { get; set; } = default!;
+        public virtual User User { get; set; }
 
         public string RestaurantId { get; set; } = null!;
-        public virtual Restaurant Restaurant { get; set; } = default!;
+        public virtual Restaurant Restaurant { get; set; }
 
         public string Comment { get; set; } = string.Empty;
 

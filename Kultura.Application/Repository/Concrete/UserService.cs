@@ -220,16 +220,25 @@ namespace Kultura.Application.Repository.Concrete
 
         public async Task<GeneralResponse> AddReviewAsync(string userId, string restaurantId, string comment, int rating)
         {
+            if (string.IsNullOrWhiteSpace(userId))
+                return new GeneralResponse(false, null, "User ID cannot be null or empty.", null);
+
+            if (string.IsNullOrWhiteSpace(restaurantId))
+                return new GeneralResponse(false, null, "Restaurant ID cannot be null or empty.", null);
+
+            if (string.IsNullOrWhiteSpace(comment))
+                return new GeneralResponse(false, null, "Comment cannot be null or empty.", null);
+
+            if (rating < 1 || rating > 5)
+                return new GeneralResponse(false, null, "Rating must be between 1 and 5.", null);
+
             var user = await _dbContext.Users.FindAsync(userId);
             if (user == null)
                 return new GeneralResponse(false, null, "User not found.", null);
 
-            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == restaurantId);
+            var restaurant = await _dbContext.Restaurants.FindAsync(restaurantId);
             if (restaurant == null)
                 return new GeneralResponse(false, null, "Restaurant not found.", null);
-
-            if (rating < 1 || rating > 5)
-                return new GeneralResponse(false, null, "Rating must be between 1 and 5.", null);
 
             var hasReservation = await _dbContext.Reservations
                 .AnyAsync(r => r.UserId == userId &&
@@ -241,17 +250,26 @@ namespace Kultura.Application.Repository.Concrete
 
             var review = new Review
             {
-                User = user,
-                Restaurant = restaurant,
+                UserId = userId,
+                RestaurantId = restaurantId,
                 Comment = comment,
-                Rating = rating
+                Rating = rating,
+                CreatedAt = DateTime.UtcNow,
             };
 
-            await _dbContext.Reviews.AddAsync(review);
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                await _dbContext.Reviews.AddAsync(review);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, "An error occurred while saving the review.", ex.Message);
+            }
 
             return new GeneralResponse(true, "Review added successfully.", null, review);
         }
+
 
 
 

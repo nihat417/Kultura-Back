@@ -84,12 +84,12 @@ namespace Kultura.Persistence.Data
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
-                .HasForeignKey(r => r.Id); 
+                .HasForeignKey(r => r.UserId); 
 
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.Restaurant)
                 .WithMany(r => r.Reviews)
-                .HasForeignKey(r => r.Id); 
+                .HasForeignKey(r => r.RestaurantId); 
         }
 
 
