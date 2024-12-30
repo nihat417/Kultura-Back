@@ -16,5 +16,9 @@ namespace Kultura.Application.Repository.Abstract
 
         Task<GeneralResponse> DeleteReservationAsync(string reservationId);
         Task<GeneralResponse> DeleteFavourite(string userId, string restaurantId);
+        Task<GeneralResponse> DeleteReviewAsync(string reviewId, string userId);
+
+
+        Task<GeneralResponse> UpdateUserProfileAsync(string userId, string fullName, string? country, int age, string? imageUrl);
     }
 }

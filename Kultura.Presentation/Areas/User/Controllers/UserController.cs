@@ -134,6 +134,39 @@ namespace Kultura.Presentation.Areas.User.Controllers
             return Ok(result);
         }
 
+        [HttpDelete("delete-myreview")]
+        public async Task<IActionResult> DeleteMyreView([FromQuery] string reviewId, [FromQuery] string userId)
+        {
+            var result = await _unitOfWork.UserService.DeleteReviewAsync(reviewId, userId);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+        #endregion
+
+
+        #region put
+
+        [HttpPut("/UpdateProfile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto request)
+        {
+            if (request == null)
+                return BadRequest(new { message = "Invalid request data." });
+
+            var response = await _unitOfWork.UserService.UpdateUserProfileAsync(
+                request.UserId,
+                request.FullName,
+                request.Country,
+                request.Age,
+                request.ImageUrl
+            );
+
+            if (response.Success) return Ok(new { message = response.Message, data = response.Data });
+
+            return BadRequest(new { message = response.Message, error = response.ErrorMessage });
+        }
+
+
         #endregion
     }
 }

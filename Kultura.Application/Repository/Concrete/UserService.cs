@@ -324,6 +324,72 @@ namespace Kultura.Application.Repository.Concrete
             return new GeneralResponse(true, "Restaurant removed from favourites successfully.", null, null);
         }
 
+        public async Task<GeneralResponse> DeleteReviewAsync(string reviewId, string userId)
+        {
+            if (string.IsNullOrWhiteSpace(reviewId))
+                return new GeneralResponse(false, null, "Review ID cannot be null or empty.", null);
+
+            if (string.IsNullOrWhiteSpace(userId))
+                return new GeneralResponse(false, null, "User ID cannot be null or empty.", null);
+
+            var review = await _dbContext.Reviews.FindAsync(reviewId);
+            if (review == null)
+                return new GeneralResponse(false, null, "Review not found.", null);
+
+            if (review.UserId != userId)
+                return new GeneralResponse(false, null, "You are not authorized to delete this review.", null);
+
+            try
+            {
+                _dbContext.Reviews.Remove(review);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, "An error occurred while deleting the review.", ex.Message);
+            }
+
+            return new GeneralResponse(true, "Review deleted successfully.", null, null);
+        }
+
+
+        #endregion
+
+        #region put
+
+        public async Task<GeneralResponse> UpdateUserProfileAsync(string userId, string fullName, string? country, int age, string? imageUrl)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+                return new GeneralResponse(false, null, "User ID cannot be null or empty.", null);
+
+            if (string.IsNullOrWhiteSpace(fullName))
+                return new GeneralResponse(false, null, "Full name cannot be null or empty.", null);
+
+            if (age <= 0)
+                return new GeneralResponse(false, null, "Age must be greater than zero.", null);
+
+            var user = await _dbContext.Users.FindAsync(userId);
+            if (user == null)
+                return new GeneralResponse(false, null, "User not found.", null);
+
+            user.FullName = fullName;
+            user.Country = country;
+            user.Age = age;
+            user.ImageUrl = imageUrl;
+            user.CreatedTime ??= DateTime.UtcNow;
+
+            try
+            {
+                _dbContext.Users.Update(user);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, "An error occurred while updating the profile.", ex.Message);
+            }
+
+            return new GeneralResponse(true, "Profile updated successfully.", null, user);
+        }
 
         #endregion
 
