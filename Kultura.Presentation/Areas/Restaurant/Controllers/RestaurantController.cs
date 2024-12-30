@@ -2,6 +2,7 @@
 using Kultura.Application.Dto.RestaurntDtos;
 using Kultura.Application.Model;
 using Kultura.Application.Repository.Abstract;
+using Kultura.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -185,6 +186,22 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             if (reservationId == null) return BadRequest();
             var response = await _unitOfWork.RestaurantService.CompleteReservationAsync(reservationId);
             if (!response.Success)return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [HttpPost("{restaurantId}/socials")]
+        public async Task<IActionResult> AddSocialLink(string restaurantId, [FromBody] AddSocialLinkRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(restaurantId))
+                return BadRequest(new { message = "Restaurant ID is required." });
+
+            if (!Enum.TryParse<SocialType>(request.SocialType, true, out var socialType))
+                return BadRequest(new { message = "Invalid social type." });
+
+            var response = await _unitOfWork.RestaurantService.AddSocialsAsync(restaurantId, request.Url, socialType);
+            if (!response.Success)
+                return BadRequest(response);
 
             return Ok(response);
         }

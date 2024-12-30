@@ -1,6 +1,7 @@
 ﻿using Kultura.Application.Dto;
 using Kultura.Application.Dto.RestaurntDtos;
 using Kultura.Domain.Entities;
+using Kultura.Domain.Enums;
 using static Kultura.Application.Model.Responses.ServiceResponses;
 
 namespace Kultura.Application.Repository.Abstract
@@ -27,6 +28,7 @@ namespace Kultura.Application.Repository.Abstract
         Task<GeneralResponse> AddTable(TableDto tableDto);
         Task<GeneralResponse> AddSlotTable(SlotDto slotDto);
         Task<GeneralResponse> AddSlotToFloorTables(AddSlotRequest request);
+        Task<GeneralResponse> AddSocialsAsync(string restaurantId, string url, SocialType socialType);
 
         //delete
         Task<GeneralResponse> DeleteFloor(FloorDto floor);

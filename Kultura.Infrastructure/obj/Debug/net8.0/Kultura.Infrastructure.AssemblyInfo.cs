@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Kultura.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f7c6ef5339ed8f90b49107a947ea46a63bc789e5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cdd65d9450a1203a77bf956983163bfd18887c4c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Kultura.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Kultura.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -538,6 +538,42 @@ namespace Kultura.Application.Repository.Concrete
                 null);
         }
 
+        public async Task<GeneralResponse> AddSocialsAsync(string restaurantId, string url, SocialType socialType)
+        {
+            if (string.IsNullOrWhiteSpace(restaurantId))
+                return new GeneralResponse(false, null, "Restaurant ID cannot be null or empty.", null);
+
+            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                return new GeneralResponse(false, null, "Invalid URL format.", null);
+
+            var restaurant = await _dbContext.Restaurants.Include(r => r.SocialLinks).FirstOrDefaultAsync(r => r.Id == restaurantId);
+            if (restaurant == null)
+                return new GeneralResponse(false, null, "Restaurant not found.", null);
+
+            if (restaurant.SocialLinks.Any(sl => sl.Url == url))
+                return new GeneralResponse(false, null, "This social link already exists.", null);
+
+            var newSocialLink = new SocialLink
+            {
+                Url = url,
+                Platform = socialType.ToString(),
+            };
+            restaurant.SocialLinks.Add(newSocialLink);
+
+            try
+            {
+                _dbContext.Restaurants.Update(restaurant);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, "An error occurred while adding the social link.", ex.Message);
+            }
+
+            return new GeneralResponse(true, "Social link added successfully.", null, newSocialLink);
+        }
+
+
 
         //delete
 
