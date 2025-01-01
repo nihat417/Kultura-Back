@@ -109,6 +109,15 @@ namespace Kultura.Presentation.Areas.User.Controllers
             return Ok(response);
         }
 
+        [HttpPost("AddUserPhoto")]
+        public async Task<IActionResult> AddPhotoUser([FromQuery]UserPhotoDto photoDto)
+        {
+            if (!ModelState.IsValid) return BadRequest("Invalid input data.");
+            var response = await _unitOfWork.UserService.AddUserPhoto(photoDto);
+            if (!response.Success) return BadRequest(response);
+            return Ok(response);
+        }
+
         #endregion
 
         #region delete

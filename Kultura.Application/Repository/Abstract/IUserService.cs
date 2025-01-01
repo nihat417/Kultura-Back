@@ -13,6 +13,7 @@ namespace Kultura.Application.Repository.Abstract
         Task<GeneralResponse> AddFavourites(string userId,string restaurantId);
         Task<GeneralResponse> CancelReservationAsync(string reservationId);
         Task<GeneralResponse> AddReviewAsync(string userId, string restaurantId, string comment, int rating);
+        Task<GeneralResponse> AddUserPhoto(UserPhotoDto userPhoto);
 
         Task<GeneralResponse> DeleteReservationAsync(string reservationId);
         Task<GeneralResponse> DeleteFavourite(string userId, string restaurantId);

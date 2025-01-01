@@ -6,6 +6,7 @@ using Kultura.Persistence.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using static Kultura.Application.Model.Responses.ServiceResponses;
+using static Kultura.Application.Services.UploadFileHelper;
 
 namespace Kultura.Application.Repository.Concrete
 {
@@ -268,6 +269,42 @@ namespace Kultura.Application.Repository.Concrete
             }
 
             return new GeneralResponse(true, "Review added successfully.", null, review);
+        }
+
+        public async Task<GeneralResponse> AddUserPhoto(UserPhotoDto userPhoto)
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userPhoto.UserId);
+            Console.WriteLine("\n 1 ci id tapldi");
+
+            if (user == null)
+                return new GeneralResponse(false, null, "User not found", null);
+
+            Console.WriteLine("\n 2ci null deil");
+
+            if (userPhoto == null || userPhoto.UserImage == null || string.IsNullOrEmpty(userPhoto.UserId))
+                return new GeneralResponse(false, null, "Invalid user photo DTO", null);
+
+            Console.WriteLine("\n 3 cu try a gelr");
+
+            try
+            {
+                Console.WriteLine("\n 4cu user e add ediriy");
+                user.ImageUrl = (userPhoto.UserImage != null)
+                    ? await CloudinaryService.UploadFile(userPhoto.UserImage, "userphotos")
+                    : "https://yandex.ru/images/search?img_url=http%3A%2F%2Fimages.hdqwalls.com%2Fdownload%2Fsunset-tree-red-ocean-sky-7w-3840x2160.jpg&lr=105888&pos=0&rpt=simage&serp_list_type=all&source=serp&text=image";
+
+                Console.WriteLine("\n 5cu add oldu");
+
+                _dbContext.Users.Update(user);
+                await _dbContext.SaveChangesAsync();
+
+                Console.WriteLine("\n 6ci yazrx bura");
+                return new GeneralResponse(true, "User photo updated successfully", null,user);
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, $"Error uploading photo: {ex.Message}", null);
+            }
         }
 
 
