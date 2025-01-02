@@ -288,6 +288,16 @@ namespace Kultura.Application.Repository.Concrete
 
             try
             {
+                if (!string.IsNullOrEmpty(user.ImageUrl))
+                {
+                    string publicId = ExtractPublicIdFromUrl(user.ImageUrl);
+                    if (!string.IsNullOrEmpty(publicId))
+                    {
+                        Console.WriteLine("\n delete photo");
+                        await CloudinaryService.DeleteFile(publicId);
+                    }
+                }
+
                 Console.WriteLine("\n 4cu user e add ediriy");
                 user.ImageUrl = (userPhoto.UserImage != null)
                     ? await CloudinaryService.UploadFile(userPhoto.UserImage, "userphotos")
@@ -307,7 +317,21 @@ namespace Kultura.Application.Repository.Concrete
             }
         }
 
-
+        private string ExtractPublicIdFromUrl(string imageUrl)
+        {
+            try
+            {
+                var uri = new Uri(imageUrl);
+                var segments = uri.AbsolutePath.Split('/');
+                var publicIdWithExtension = segments[^1]; 
+                return publicIdWithExtension.Split('.')[0]; 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error extracting public ID: {ex.Message}");
+                return null;
+            }
+        }
 
 
         #endregion
@@ -394,7 +418,7 @@ namespace Kultura.Application.Repository.Concrete
 
         #region put
 
-        public async Task<GeneralResponse> UpdateUserProfileAsync(string userId, string fullName, string? country, int age, string? imageUrl)
+        public async Task<GeneralResponse> UpdateUserProfileAsync(string userId, string fullName, string? country, int age)
         {
             if (string.IsNullOrWhiteSpace(userId))
                 return new GeneralResponse(false, null, "User ID cannot be null or empty.", null);
@@ -412,7 +436,6 @@ namespace Kultura.Application.Repository.Concrete
             user.FullName = fullName;
             user.Country = country;
             user.Age = age;
-            user.ImageUrl = imageUrl;
             user.CreatedTime ??= DateTime.UtcNow;
 
             try

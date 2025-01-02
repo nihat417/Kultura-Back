@@ -39,31 +39,32 @@ namespace Kultura.Application.Services
                     throw new ArgumentNullException(nameof(folderName), "Folder name cannot be null or empty");
                 Console.WriteLine("\n foldername de null doul");
 
-                //var uploadParams = new ImageUploadParams()
-                //{
-                //    File = new FileDescription(file.FileName, file.OpenReadStream()),
-                //    Folder = folderName
-                //};
+                var uploadParams = new ImageUploadParams()
+                {
+                    File = new FileDescription(file.FileName, file.OpenReadStream()),
+                    Folder = folderName
+                };
 
                 Console.WriteLine("\n imageupload hissesi");
-                var uploadResult = new ImageUploadResult();
-
-                if(file.Length > 0)
-                {
-                    using var stream = file.OpenReadStream();
-                    var uploadparams = new ImageUploadParams
-                    {
-                        File = new FileDescription(file.FileName, stream),
-                    };
-
-                    uploadResult =await _cloudinary.UploadAsync(uploadparams);
-
-                }
-
-                //if (uploadResult?.SecureUrl == null)
+                //var uploadResult = new ImageUploadResult();
+                //
+                //if(file.Length > 0)
                 //{
-                //    throw new Exception("Failed to upload image to Cloudinary");
+                //    using var stream = file.OpenReadStream();
+                //    var uploadparams = new ImageUploadParams
+                //    {
+                //        File = new FileDescription(file.FileName, stream),
+                //    };
+                //
+                //    uploadResult =await _cloudinary.UploadAsync(uploadparams);
+                //
                 //}
+
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                if (uploadResult?.SecureUrl == null)
+                {
+                    throw new Exception("Failed to upload image to Cloudinary");
+                }
                 Console.WriteLine("\n secreturl null doul");
 
                 return uploadResult.SecureUrl.AbsoluteUri;
@@ -72,9 +73,24 @@ namespace Kultura.Application.Services
 
             public static async Task DeleteFile(string publicId)
             {
-                var deleteParams = new DeletionParams(publicId);
-                await Task.Run(() => _cloudinary.Destroy(deleteParams));
+                if (string.IsNullOrEmpty(publicId))
+                    throw new ArgumentNullException(nameof(publicId), "Public ID cannot be null or empty");
+
+                try
+                {
+                    var deleteParams = new DeletionParams(publicId);
+                    var deletionResult = await _cloudinary.DestroyAsync(deleteParams);
+
+                    if (deletionResult.Result != "ok")
+                        throw new Exception($"Failed to delete file: {deletionResult.Error?.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error during file deletion: {ex.Message}");
+                    throw;
+                }
             }
+
         }
     }
 }
