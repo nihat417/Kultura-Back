@@ -8,6 +8,7 @@ using Kultura.Persistence.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static Kultura.Application.Model.Responses.ServiceResponses;
+using static Kultura.Application.Services.UploadFileHelper;
 
 namespace Kultura.Application.Repository.Concrete
 {
@@ -573,7 +574,59 @@ namespace Kultura.Application.Repository.Concrete
             return new GeneralResponse(true, "Social link added successfully.", null, newSocialLink);
         }
 
+        public async Task<GeneralResponse> AddRestaurantMainPhoto(RestaurantMainPhotoDto mainPhotoDto)
+        {
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == mainPhotoDto.RestaurantId);
 
+            if (restaurant == null)
+                return new GeneralResponse(false, null, "restaurant not found", null);
+
+            if (mainPhotoDto == null || mainPhotoDto.MainImage == null || string.IsNullOrEmpty(mainPhotoDto.RestaurantId))
+                return new GeneralResponse(false, null, "Invalid restaurant photo DTO", null);
+
+            try
+            {
+                if (!string.IsNullOrEmpty(restaurant.MainPhoto))
+                {
+                    string publicId = ExtractPublicIdFromUrl(restaurant.MainPhoto);
+                    if (!string.IsNullOrEmpty(publicId))
+                    {
+                        Console.WriteLine("\n delete photo");
+                        await CloudinaryService.DeleteFile(publicId);
+                    }
+                }
+
+                restaurant.MainPhoto = (mainPhotoDto.MainImage != null)
+                    ? await CloudinaryService.UploadFile(mainPhotoDto.MainImage, "restaurantmainphotos")
+                    : "https://yandex.ru/images/search?img_url=http%3A%2F%2Fimages.hdqwalls.com%2Fdownload%2Fsunset-tree-red-ocean-sky-7w-3840x2160.jpg&lr=105888&pos=0&rpt=simage&serp_list_type=all&source=serp&text=image";
+
+
+                _dbContext.Restaurants.Update(restaurant);
+                await _dbContext.SaveChangesAsync();
+
+                return new GeneralResponse(true, "restaurant photo updated successfully", null, restaurant);
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, $"Error uploading photo: {ex.Message}", null);
+            }
+        }
+
+        private string ExtractPublicIdFromUrl(string imageUrl)
+        {
+            try
+            {
+                var uri = new Uri(imageUrl);
+                var segments = uri.AbsolutePath.Split('/');
+                var publicIdWithExtension = segments[^1];
+                return publicIdWithExtension.Split('.')[0];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error extracting public ID: {ex.Message}");
+                return null;
+            }
+        }
 
         //delete
 
@@ -645,7 +698,5 @@ namespace Kultura.Application.Repository.Concrete
             _dbContext.Restaurants.Update(restaurant);
             await _dbContext.SaveChangesAsync();
         }
-
-        
     }
 }

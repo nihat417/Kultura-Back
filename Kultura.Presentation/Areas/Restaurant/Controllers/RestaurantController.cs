@@ -206,6 +206,15 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             return Ok(response);
         }
 
+        [HttpPost("AddRestaurantMainPhoto")]
+        public async Task<IActionResult> AddMainPhotoRestaurant([FromQuery] RestaurantMainPhotoDto photoDto)
+        {
+            if (!ModelState.IsValid) return BadRequest("Invalid input data.");
+            var response = await _unitOfWork.RestaurantService.AddRestaurantMainPhoto(photoDto);
+            if (!response.Success) return BadRequest(response);
+            return Ok(response);
+        }
+
         #endregion
 
         #region delete

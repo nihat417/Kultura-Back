@@ -274,17 +274,12 @@ namespace Kultura.Application.Repository.Concrete
         public async Task<GeneralResponse> AddUserPhoto(UserPhotoDto userPhoto)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userPhoto.UserId);
-            Console.WriteLine("\n 1 ci id tapldi");
 
             if (user == null)
                 return new GeneralResponse(false, null, "User not found", null);
 
-            Console.WriteLine("\n 2ci null deil");
-
             if (userPhoto == null || userPhoto.UserImage == null || string.IsNullOrEmpty(userPhoto.UserId))
                 return new GeneralResponse(false, null, "Invalid user photo DTO", null);
-
-            Console.WriteLine("\n 3 cu try a gelr");
 
             try
             {

@@ -29,6 +29,7 @@ namespace Kultura.Application.Repository.Abstract
         Task<GeneralResponse> AddSlotTable(SlotDto slotDto);
         Task<GeneralResponse> AddSlotToFloorTables(AddSlotRequest request);
         Task<GeneralResponse> AddSocialsAsync(string restaurantId, string url, SocialType socialType);
+        Task<GeneralResponse> AddRestaurantMainPhoto(RestaurantMainPhotoDto mainPhotoDto);
 
         //delete
         Task<GeneralResponse> DeleteFloor(FloorDto floor);

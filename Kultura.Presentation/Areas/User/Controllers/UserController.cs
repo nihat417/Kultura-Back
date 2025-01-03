@@ -166,8 +166,7 @@ namespace Kultura.Presentation.Areas.User.Controllers
                 request.UserId,
                 request.FullName,
                 request.Country,
-                request.Age,
-                request.ImageUrl
+                request.Age
             );
 
             if (response.Success) return Ok(new { message = response.Message, data = response.Data });
