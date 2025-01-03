@@ -26,6 +26,8 @@ namespace Kultura.Application.Repository.Concrete
             var verificationResult = passwordHasher.VerifyHashedPassword(getUser, getUser.PasswordHash, loginDto.Password);
             if (verificationResult != PasswordVerificationResult.Success) return new LoginResponse(false, null, null, "Invalid email or password");
 
+            if (!getUser.EmailConfirmed) return new LoginResponse(false, null, null, "please verify email");
+
             var userSession = new UserSession(getUser.Id, getUser.Country,getUser.FullName, getUser.Age, getUser.Email,"User");
             (string accsesToken, string refreshToken) = _jwtTokenService.CreateToken(userSession);
 

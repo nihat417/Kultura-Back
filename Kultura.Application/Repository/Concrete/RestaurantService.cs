@@ -153,6 +153,8 @@ namespace Kultura.Application.Repository.Concrete
                         r.Email,
                         r.PhoneNumber,
                         r.Cuisines,
+                        r.EmailConfirmed,
+                        r.Photos,
                         r.OpeningTime,
                         r.ClosingTime,
                         r.MinPrice,
@@ -611,6 +613,36 @@ namespace Kultura.Application.Repository.Concrete
                 return new GeneralResponse(false, null, $"Error uploading photo: {ex.Message}", null);
             }
         }
+
+        public async Task<GeneralResponse> AddRestaurantPhotos(AddRestaurantPhotosDto photosDto)
+        {
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == photosDto.RestaurantId);
+
+            if (restaurant == null)
+                return new GeneralResponse(false, null, "Restaurant not found", null);
+
+            if (photosDto == null || photosDto.Images == null || !photosDto.Images.Any())
+                return new GeneralResponse(false, null, "No photos provided", null);
+
+            try
+            {
+                foreach (var image in photosDto.Images)
+                {
+                    var imageUrl = await CloudinaryService.UploadFile(image, "restaurantphotos");
+                    restaurant.Photos.Add(imageUrl); 
+                }
+
+                _dbContext.Restaurants.Update(restaurant);
+                await _dbContext.SaveChangesAsync();
+
+                return new GeneralResponse(true, "Photos added successfully", null, restaurant);
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse(false, null, $"Error uploading photos: {ex.Message}", null);
+            }
+        }
+
 
         private string ExtractPublicIdFromUrl(string imageUrl)
         {

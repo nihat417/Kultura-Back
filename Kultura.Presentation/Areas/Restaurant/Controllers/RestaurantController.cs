@@ -215,6 +215,17 @@ namespace Kultura.Presentation.Areas.Restaurant.Controllers
             return Ok(response);
         }
 
+        [HttpPost("AddPhotos")]
+        public async Task<IActionResult> AddPhotos([FromForm] AddRestaurantPhotosDto photosDto)
+        {
+            if (photosDto == null || photosDto.Images == null || !photosDto.Images.Any())
+                return BadRequest("No photos provided.");
+
+            var response = await _unitOfWork.RestaurantService.AddRestaurantPhotos(photosDto);
+            if (response.Success) return Ok(response);
+            else return BadRequest(response);
+        }
+
         #endregion
 
         #region delete
